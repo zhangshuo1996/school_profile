@@ -2,13 +2,13 @@ version: "2.2"
 services:
  web:
   build: .
-  image: kunshan_system
+  image: school_profile
   volumes:
   - .:/code
  nginx:
   build: ./nginx
   ports:
-  - "80:80"
+  - "7777:7777"
   volumes:
    - .:/code
   links:
