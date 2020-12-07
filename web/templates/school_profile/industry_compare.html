@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+    <style>
+        .mybox {
+            height: 30px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            line-height: 30px;
+            text-align: center;
+        }
+        {#.mybox::-webkit-scrollbar {#}
+        {#    display: ;#}
+        {#}#}
+        .table>tbody>tr>td{
+            border:0px;
+        }
+        .table th, .table td {
+            vertical-align: middle!important;
+        }
+        ul{
+            list-style-type: none;
+        }
+
+        table td {
+            height: 25px;
+            line-height: 25px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        table td:hover { /* 鼠标滑过  显示隐藏的内容  伴有横向的滚动条 */
+            overflow: auto;
+            text-overflow: clip;
+        }
+        .mytable tr td {
+            /* for IE */
+            text-overflow: ellipsis;
+            /* for Firefox,mozilla */
+            -moz-text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: left
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    <div class="row">
+{#        <div class="col-md-1"></div>#}
+        <div class="col-md-9" style="padding-left: 40px; height: 100px; width: 1300px;padding-top: 20px; padding-right: 100px">
+            <div style="height:120px; background-image: url({{ url_for("school_profile.school_header_background", school=school) }}); background-repeat: no-repeat; background-size: cover">
+                <img src="{{ url_for("school_profile.school_header_logo", school=school) }}" height="80px" width="200px" class="" alt="..." style="padding-top: 20px;">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="" style="position: fixed; right: 60px; top:10px; z-index: 999">
+            <div style="padding-top: 50px; width: 400px;" id="search_div">
+                    <form method="post"  action="{{ url_for("school_search.hunt") }}">
+                        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="input-group input-group-newsletterp">
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="在{{ school }}内检索相关成果及团队">
+                                <input type="text" class="d-none" name="school" id="school" value="{{ school }}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索">
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+
+        <div class="col-md-8" style="padding-left: 60px; padding-top: 70px; padding-right: 50px">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs nav-tabs-sm card-header-tabs pull-right">
+{#                        <li class="nav-item" data-toggle="chart" data-trigger="click" id="institution_compare">#}
+{#                            <a class="nav-link active" href="#" data-toggle="tab" data-type="0">学院对比</a>#}
+{#                        </li>#}
+                        <li class="nav-item" data-toggle="chart" data-trigger="click" id="industry_compare" >
+                            <a class="nav-link" href="#" data-toggle="tab" data-type="0">{{ industry }}行业主要高校</a>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="header-body">
+                    <div id="this_industry_main_school_bar" style="height: 600px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" style=" height: 480px; padding-top: 70px; padding-right: 50px">
+            <div class="card" >
+                <div class="card-header">{{ school }}主要行业分布</div>
+                <div class="header-body">
+                    <div id="school_industry_pie" style="height: 600px">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/echarts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/create_graph.js') }}"></script>
+    <script>
+        let school = {{ school|tojson }};
+        let industry = {{ industry|tojson }};
+        let data = {{ data|tojson }};
+
+        $(document).ready(function () {
+            resize();
+        });
+
+         $(window).resize(function() {
+            resize();
+
+        });
+
+        function resize() {
+             let windowWidth = window.innerWidth ;
+            let windowHeight = window.innerHeight ;
+            let w1 = windowWidth / 2.4;  // 800
+            let w2 = windowWidth / 2.6;  // 720
+            let w3 = windowWidth / 2.5;
+            let w4 = windowWidth / 2.2;   // 870
+            let w5 = windowWidth / 4.8;   // 400
+            let h1 = windowHeight / 6.4;
+            let h2 = windowHeight / 3.2;
+
+            let padding_left1 = windowWidth / 24;
+
+            $("#search_div").attr("style", "padding-top: 50px; width: "+w5+"px;");
+            {#$("#my_text_area").attr("style", "width:" + w2 + "px; height:200px;");#}
+            {#$("#search_outcome").attr("style", "width: " + w1 + "px;");#}
+            {#$("#team_radar_div").attr("style", "width: "+ w3 +"px; height: "+h1+"px; position: fixed; top: 160px; right: "+padding_left1+"px;");#}
+            {#$("#team_relation_chart_div").attr("style", "width: " + w3 + "px; height: "+h1+"px; position: fixed; top: 500px; right: "+padding_left1+"px;");#}
+            {#$("#next_page").attr("style", "position: fixed; right: "+w4+"px; top:380px");#}
+         }
+    </script>
+    <script src="{{ url_for('static', filename='js/school_profile/industry_compare.js') }}"></script>
+
+{#    <script src="{{ url_for('static', filename='js/school_profile/profile_net.js') }}"></script>#}
+{% endblock %}

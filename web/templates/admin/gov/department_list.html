@@ -1,0 +1,103 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}部门列表-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+{% endblock %}
+
+{% block main %}
+    <!-- HEADER -->
+    <div class="header">
+        <div class="container-fluid">
+            <!-- Body -->
+            <div class="header-body">
+                <div class="row align-items-end">
+                    <div class="col">
+                        <h1 class="header-title">政府部门列表</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>部门</th>
+                            <th>部门全称</th>
+                            <th>操作</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% for item in department_data %}
+                            <tr>
+                                <td>{{ item['name'] }}</td>
+                                <td>{{ item['full_name'] }}</td>
+                                <td>
+                                    <button data-toggle="tooltip" title="编辑" class="pd-setting-ed"
+                                            onclick="display(this)">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <div id={{ item['name'] }} style="display:none">
+                                        <form method="post"
+                                              action="{{ url_for('gov.gov_department_modify', department_id=item['id']) }}">
+                                            <div class="col-auto">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                                <input name="name" type="text" style="background-color:transparent;"
+                                                       required="required"
+                                                       placeholder="部门简称">
+                                                <button type="submit" onclick="return confirm('确定更改部门名称？')">提交</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if department_data|length == 0 %}
+                            <tr>
+                                <td colspan="6" class="text-center">暂无政府部门</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function display(ths) {
+            var $td = $(ths).parent().parent().children();
+            var name = $td.eq(0).text();
+            console.log(name)
+            document.getElementById(name).style.display = "";
+        }
+    </script>
+    <script>
+        function display_add(name) {
+            document.getElementById(name).style.display = "";
+        }
+    </script>
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{# 展示目录，需要directories 每个目录，必须有{link: '', name: ''} #}
+{# breadcrumbs 用于展示面包屑导航栏 [{link: '', name: ''}] #}
+{% extends 'base_header_breadcrumbs.html' %}
+
+{% block title %}文件库-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>状态</th>
+                            <th>更新时间</th>
+                            <th>创建者</th>
+                        </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% if directories | length == 0 %}
+                            <tr><td colspan="{% if can_write %}4{% else %}3{% endif %}" class="text-center">暂无提交文件</td></tr>
+                        {% endif %}
+                        {% for dir in directories %}
+                            <tr>
+                                <td>
+                                    <a class="d-flex align-items-center text-dark"
+                                            href="{% if 'args' in dir %}{{ url_for(dir.link, **dir.args) }}{% else %}{{ url_for(dir.link) }}{% endif %}">
+                                        <span class="file-logo dir {{ dir.category | default() }} mr-3"></span>
+                                        {{ dir.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if 'badge' in dir %}
+                                        <span class="badge badge-light">{{ dir.badge }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if 'gmt_create' in dir %}
+                                        {% set time=datetime.fromtimestamp(dir.gmt_create) %}
+                                        <span data-toggle="tooltip" data-placement="top" data-delay="500"
+                                              data-timestamp="{{ time.strftime('%Y-%m-%dT%H:%M:%S') }}">
+                                        {{ moment(time, local=True).fromNow(refresh=True) }}
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ dir.uploader }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ moment.include_moment(local_js=url_for('static', filename='js/dist/moment-with-locales.min.js')) }}
+    <script>
+        let time_tooltip = 0;
+        moment.locale('zh-cn');
+    </script>
+{% endblock %}

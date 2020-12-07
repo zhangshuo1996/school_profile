@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+    <style>
+        .table>tbody>tr>td{
+            border:0px;
+        }
+        .table th, .table td {
+            vertical-align: middle!important;
+        }
+        ul{
+            list-style-type: none;
+        }
+
+        table td {
+            height: 25px;
+            line-height: 25px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        table td:hover { /* 鼠标滑过  显示隐藏的内容  伴有横向的滚动条 */
+            overflow: auto;
+            text-overflow: clip;
+        }
+        .mytable tr td {
+            /* for IE */
+            text-overflow: ellipsis;
+            /* for Firefox,mozilla */
+            -moz-text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: left
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <h3></h3>
+    <!--    显示搜索框-->
+    <div class="row">
+        <div class="col-md-12 ">
+            <form method="post"  action="{{ url_for("school_search.hunt") }}">
+                <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="input-group input-group-newsletterp">
+                    <div class="col-md-11" style="padding-left: 80px; padding-right: 50px">
+                        <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
+                        <input type="text" class="d-none" name="school" id="school" value="{{ school }}">
+                    </div>
+                    <div class="col-md-1" style="right: 40px; padding-right: 50px">
+                        <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索" >
+                    </div>
+                </div>
+            </form>
+
+            <form id="my_form" class="m_form d-none" action="/school/search/get_pdf" method="post">
+                <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input class="d-none" type="hidden" name="page_num" value="0" id="fill_data"/>
+                <button class="d-none" type="submit" id="submit_download"></button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <ul id="nav_father" class="nav nav-tabs">
+        </ul>
+    </div>
+    <br>
+
+
+    <div class="row" >
+        <div class="col-md-8" id="download_ele" style="padding-left: 50px">
+            <div class="container" id="search_outcome">
+
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="container" style="width: 600px; height: 300px; position: fixed; top: 80px; right: 40px;">
+                <div class="card" >
+                    <div class="card-header" id="radar_graph_header">**团队科研水平评估</div>
+                    <div class="card-body" style="height: 240px" id="team-radar">
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="width: 600px; height: 700px; position: fixed; top: 450px; right: 40px;">
+                <div class="card">
+                    <div class="card-header" id="leader_name">**团队合作关系</div>
+                    <div class="card-body" style="height: 450px" id="team-relation-chart">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="next_page" style="position: fixed; right: 10px; top:450px">
+            <span class="fe fe-chevrons-right move-page" style="font-size: 2rem"></span>
+        </div>
+        <div id="last_page" style="position: fixed; left: 200px; top:450px">
+            <span class="fe fe-chevrons-left move-page" style="font-size: 2rem"></span>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+{#    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>#}
+    <script src="{{ url_for('static', filename='js/school_profile/echarts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/create_graph.js') }}"></script>
+    <script>
+        let transport = {
+            "data": {{ data|tojson }},
+            "type": {{ type|tojson }},
+            "input_key": {{ input_key|tojson }},
+        };
+        let school = {{ school|tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/school_profile/search_outcome.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/profile_net.js') }}"></script>
+
+{#    <script type="text/javascript" src="{{ url_for('static', filename='js/download_page/html2canvas.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ url_for('static', filename='js/download_page/jspdf.debug.js') }}"></script>#}
+{% endblock %}

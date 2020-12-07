@@ -1,0 +1,118 @@
+{% extends 'admin/base.html' %}
+{% block title %}新建系统角色{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="header">
+                    <div class="header-body">
+                        <!-- Nav -->
+                        <div class="row align-items-end">
+                            <div class="col">
+                                <h2>新建角色信息</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{ url_for('system.role_add') }}" id="form-role-add" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label for="" class="col-2">角色名</label>
+                                        <div class="col pl-4">
+                                            <input type="text" name="name" id="name" class="form-control"
+                                                   required="required">
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label class="col-2">角色类别</label>
+                                        <div class="col pl-4">
+                                            <select name="category" id="category" class="form-control">
+                                                {% for category in categories %}
+                                                    <option value="{{ category['id'] }}">{{ category['name'] }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label for="" class="col-2">所属部门序号</label>
+                                        <div class="col pl-4">
+                                            <select name="department" id="department" class="form-control">
+                                                {% for department in departments %}
+                                                    <option value="{{ department['id'] }}">{{ department['name'] }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label class="col-2">权限选择</label>
+                                        <div class="col pl-4">
+                                            {% for permission in permissions %}
+                                                <input type="checkbox" name="permissions[]" id={{ permission['name'] }}
+                                                        value={{ permission['id'] }}>&ensp;
+                                                <label for={{ permission['name'] }}>{{ permission['name'] }}</label><br>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <div class="col pl-4">
+                                            <div style="text-align:center">
+                                                <button type="submit" id="btn-submit-form"
+                                                        class="btn btn-primary float">确定
+                                                </button>
+                                                <button type="button" class="btn btn-primary float"
+                                                        onclick="javascript:history.back(-1);">返回
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validate() {
+            var pw1 = document.getElementById("password").value;
+            var pw2 = document.getElementById("password_repeat").value;
+            if (pw1 == pw2) {
+                document.getElementById("tishi").innerHTML = "<font color='green'>两次密码相同</font>";
+                document.getElementById("btn-submit-form").disabled = false;
+            } else {
+                document.getElementById("tishi").innerHTML = "<font color='red'>两次密码不相同</font>";
+                document.getElementById("btn-submit-form").disabled = true;
+            }
+        }
+    </script>
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
+
+{% endblock %}

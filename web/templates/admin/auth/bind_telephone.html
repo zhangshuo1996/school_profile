@@ -1,0 +1,58 @@
+{% extends 'admin/auth/base.html' %}
+
+{% block title %}用户登录-昆山开发区科技局信息系统{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block login_form %}
+    <div class="card border-primary mb-3 m-auto pt-2 pb-2">
+        <div class="card-header">
+            <!-- Title -->
+            <h4 class="card-header-title">
+                绑定手机
+            </h4>
+        </div>
+            <div class="card-body">
+                <form method="post" class="form-signin">
+                    <div id="login-by-verification" class="text-primary">
+                            {{ form.csrf_token }}
+                        <div class="form-group">
+                            {{ form.telephone2 }}
+                        </div>
+                        <div  class="form-group">
+                            {{ form.password }}
+                        </div>
+                        <div class="input-group mb-3">
+                            {{ form.verification_code }}
+                            <div class="input-group-append">
+                                <button type="button" id="get_verification_code" class="btn btn-outline-secondary">
+                                    获取验证码
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        {{ form.submit_bind }}
+                    </div>
+                </form>
+            </div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain){
+                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                    }
+            }
+        });
+    </script>
+{% endblock %}

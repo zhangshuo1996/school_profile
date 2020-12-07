@@ -1,0 +1,77 @@
+{% extends 'base_header_breadcrumbs.html' %}
+
+
+{% block title %}
+    检索结果
+{% endblock %}
+
+{% block styles %}
+<style type="text/css">
+    .page-header {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    a:hover{
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-sm-8 offset-sm-2">
+                <form action="/engineer_community/search_community">
+                    <div class="input-group">
+                        <input type="text" id="enterprise" name="enterprise" class="form-control"
+                               value={{ search_content }}>
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="submit">搜索</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+            <div class="row offset-sm-2">
+                <div class="col-sm-7" id="search-results">
+                    <h5>
+                        {% if community_info | length == 0 %}
+                        未找到"<strong>{{ search_content }}</strong>"相关结果
+                        {% else %}
+                        共找到{{ community_info|length }}条相关结果
+                        {% endif %}
+                    </h5>
+                </div>
+{#                排序：#}
+{#                <div class="col-sm-4 select" style="float: right">#}
+{#                    <select>#}
+{#                        <option>按成立时间</option>#}
+{#                        <option>按注册资金</option>#}
+{#                        <option>按研发能力</option>#}
+{#                    </select>#}
+{#                </div>#}
+            </div>
+        </br>
+
+        {% for commmunity in community_info %}
+            <div class="row">
+                <div class="col-sm-8 offset-sm-2" id="search-results">
+                    <div class="card">
+                        <div class="card-body">
+                            相关工程师：
+                                <span class="text">
+                                     {{ commmunity.engineers }}
+                                </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+
+{% endblock %}

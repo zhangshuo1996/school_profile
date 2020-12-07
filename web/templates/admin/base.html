@@ -1,0 +1,157 @@
+{% from 'macros.html' import render_nav_item %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+        <title>{% block title %}昆山开发区科技局信息系统{% endblock %}</title>
+        <!--bootstrap-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+        <style>
+            .alert-box {
+                position: fixed;
+                width: 350px;
+                top: 20%;
+                left: 50%;
+                transform: translateX(-175px);
+                z-index: 9999;
+                text-align: center;
+            }
+
+            .cursor-pointer {
+                cursor: pointer;
+            }
+
+            .modal-body .form-row {
+                margin: 10px 0;
+                align-items: center;
+            }
+
+            {#.nav-item:hover,#}
+            {#.nav-item.active {#}
+            {#    background: #f9fbfd;#}
+            {
+            #}#}
+
+            .nowrap {
+                white-space: nowrap;
+            }
+
+            .hover-danger:hover {
+                color: #E63757;
+            }
+
+            .hover-primary:hover {
+                color: #2C7BE5;
+            }
+
+            .one-row {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+
+            @media (max-width: 767px) {
+                .dd-md-none {
+                    display: none !important;
+                }
+            }
+        </style>
+        {% block styles %}{% endblock %}
+    {% endblock %}
+</head>
+
+<body>
+{% block nav %}
+    {% if current_user.is_authenticated %}
+        {% include 'admin/_side_bar.html' %}
+    {% endif %}
+{% endblock %}
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    {# 消息 #}
+
+
+    <div id="alert-box" class="alert alert-success alert-box" style="display: none">
+        <strong><span class="alert-message">提交成功，等待管理员审核</span></strong>
+    </div>
+
+    <main>
+        {% block header %}
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    {% with messages = get_flashed_messages(with_categories=True) %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <ul class="flash">
+                                    <div class="alert alert-{{ message[0] }} text-center alert-box" role="alert">
+                                        <button aria-hidden="true" type="button" class="close" data-dismiss="alert">
+                                            x
+                                        </button>
+                                        <strong>{{ message[1] }}</strong>
+                                    </div>
+                                </ul>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        {% endblock %}
+        {% block main %}
+        {% endblock %}
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script>
+    /**
+     * 显示/隐藏提示框
+     * @param {boolean} isSuccess
+     * @param {string} message 用于显示的消息
+     */
+    function toggle_alert(isSuccess, message) {
+        let alert_box = $("#alert-box");
+        // 显示操作成功的提示框
+        alert_box.find('.alert-message').text(message);
+        if (isSuccess) {
+            alert_box.removeClass('alert-danger');
+            alert_box.addClass('alert-success');
+        } else {
+            alert_box.addClass('alert-danger');
+            alert_box.removeClass('alert-success');
+        }
+        alert_box.show(200);
+        setTimeout(() => {
+            alert_box.hide(200);
+        }, 2500)
+    }
+
+    //自动隐藏
+    setTimeout(function () {
+        $('.alert-box').hide(200);
+    }, 2500);
+
+    $("#sidebarCollapse").on("click", "a.nav-link[data-toggle='collapse']", function () {
+        if (!$(this).next(".collapse").hasClass("show")) {
+            $('#sidebarCollapse div.collapse.show').siblings('a').attr('aria-expanded', false);
+            $("#sidebarCollapse div.collapse.show").removeClass("show");
+        }
+    });
+</script>
+<script type="text/javascript">
+    $('.alert').fadeOut(1500);
+</script>
+{% block scripts %}
+{% endblock %}
+</body>
+</html>

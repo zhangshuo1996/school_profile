@@ -1,0 +1,173 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}人员列表-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+{% endblock %}
+
+{% block main %}
+    <!-- HEADER -->
+    <div class="header">
+        <div class="container-fluid">
+            <!-- Body -->
+            <div class="header-body">
+                <div class="row align-items-end">
+                    <div class="col">
+                        <h1 class="header-title">人员列表</h1>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary lift" data-toggle="modal"
+                                onclick="javascript:window.location.href='{{ url_for('system.admin_add') }}'">
+                            <i class="fe fe-plus"></i>新建管理员
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcome-area">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="breadcome-list">
+                        <form action="{{ url_for('system.user_list') }}" enctype='application/x-www-form-urlencoded'
+                              method='get'
+                              class="dropzone dropzone-custom needsclick add-professors"
+                              id="demo1-upload">
+                            <div class="row">
+                                <div class="col-lg-2 col-md-4">
+                                    <div class="form-group">
+                                        <select name="is_admin" id="is_admin" class="form-control">
+                                            <option value=1 {% if is_admin %}selected{% endif %}>管理员</option>
+                                            <option value=0 {% if not is_admin %}selected{% endif %}>用户</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+                                    <div class="form-group">
+                                        <input name="name" type="text" class="form-control" placeholder="姓名"
+                                               value="{{ name }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+                                    <div class="form-group">
+                                        <input name="phone" type="number" class="form-control" placeholder="电话号码"
+                                               value="{{ phone }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+                                    <div class="form-group">
+                                        <select name="category" id="category" class="form-control">
+                                            {% for category in category_data %}
+                                                {% if category['id'] == category_id %}
+                                                    <option value={{ category['id'] }} selected>{{ category['name'] }}</option>
+                                                {% else %}
+                                                    <option value={{ category['id'] }}>{{ category['name'] }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+                                    <div class="form-group">
+                                        <input name="org" type="text" class="form-control"
+                                               placeholder="所属部门或公司" value="{{ org }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light">查询</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>电话号码</th>
+                            <th>类型</th>
+                            <th>管理员</th>
+                            <th>所属部门或公司</th>
+                            <th>改变管理员权限</th>
+                        </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% for user in admins %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ user['name'] }}</td>
+                                <td>{{ user['telephone'] }}</td>
+                                {% if user['category'] == 1 %}
+                                    <td>政府用户</td>
+                                {% elif user['category'] == 2 %}
+                                    <td>中介用户</td>
+                                {% elif user['category'] == 3 %}
+                                    <td>系统管理员</td>
+                                {% endif %}
+                                <td>{{ user['is_admin'] }}</td>
+                                <td>{{ user['org'] }}</td>
+                                <td>
+                                    {% if is_admin %}
+                                        <form action="{{ url_for('system.admin_delete', id = user['id']) }}"
+                                              method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                            <button type="submit" title="收回"
+                                                    onclick="return window.confirm('确定收回管理员权限？')"><i
+                                                    class="fa fa-trash-o" aria-hidden="true"></i></button>
+                                        </form>
+                                    {% else %}
+                                        <form action="{{ url_for('system.assign_admin', user_id = user['id']) }}"
+                                              method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                            <button type="submit" title="授予"
+                                                    onclick="return window.confirm('确定授予管理员权限？')"><i
+                                                    class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if admins|length == 0 %}
+                            <tr>
+                                <td colspan="6" class="text-center">暂无角色</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function display(ths) {
+            var $td = $(ths).parent().parent().children();
+            var name = $td.eq(0).text();
+            console.log(name)
+            document.getElementById(name).style.display = "";
+        }
+    </script>
+    <script>
+        function display_add(name) {
+            document.getElementById(name).style.display = "";
+        }
+    </script>
+{% endblock %}

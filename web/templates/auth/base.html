@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% endblock %}
+<style>
+    /*footer*/
+.footer {width: 100%;height:auto;padding: 40px 0 40px;text-align: center;}
+.footer p {color: #a194c3;line-height: 25px}
+.footer p a { color: #a194c3;text-decoration: none}
+.footer p a:hover { color: #bbbae7;text-decoration: underline}
+.ifooter p {color: #888}
+.ifooter p a { color: #888}
+.ifooter p a:hover { color: #bbbae7}
+</style>
+{% block main %}
+    <!-- MAIN CONTENT -->
+    <div class="container-fluid">
+
+        <div class="row align-items-center justify-content-center">
+            <div class="col-12 col-md-5 col-lg-6 col-xl-4 px-lg-4 my-5">
+                {% block login_form %}
+                {% endblock %}
+            </div>
+
+            <div class="col-12 col-md-7 col-lg-6 col-xl-8 d-none d-lg-block">
+                <div class="bg-cover vh-100 mr-n3" style="background-image: url({{ url_for('static', filename='image/login_bg.jpg') }});"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    <div class="footer ifooter">
+      <p>Copyright © 2020-2021
+          <a target="_blank" href="http://www.3lx.city">三螺旋</a> All Rights Reserved
+      </p>
+      <p>
+        <a target="_blank" href="http://beian.miit.gov.cn">苏ICP备2020061379号</a>
+      </p>
+    </div>
+
+

@@ -1,0 +1,107 @@
+.dir-logo {
+    width: 164px;
+    height: 164px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block !important;
+}
+.dir-logo.remind {
+    background-image: url("../image/file logo/dir_remind.svg");
+}
+.dir-logo.normal {
+    background-image: url("../image/file logo/dir_normal.svg");
+}
+.dir-name {
+    width: 164px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-logo {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.avatar .file-logo{
+    width: 100%;
+    height: 100%;
+}
+
+.file-logo.dir {
+    background-image: url('../image/file logo/dir.svg');
+}
+
+.file-logo.dir.remind {
+    background-image: url('../image/file logo/dir_remind.svg');
+}
+
+.file-logo.dir.green {
+    background-image: url('../image/file logo/dir_green.svg');
+}
+
+.file-logo.pdf {
+    background-image: url('../image/file logo/pdf.svg');
+}
+
+.file-logo.docx {
+    background-image: url('../image/file logo/docx.svg');
+}
+
+.file-logo.doc {
+    background-image: url('../image/file logo/doc.svg');
+}
+
+.file-logo.xlsx {
+    background-image: url('../image/file logo/xlsx.svg');
+}
+
+.file-logo.xls {
+    background-image: url('../image/file logo/xls.svg');
+}
+
+.file-logo.zip {
+    background-image: url('../image/file logo/zip.svg');
+}
+
+.file-logo.txt {
+    background-image: url('../image/file logo/txt.svg');
+}
+
+.file-logo.img {
+    background-image: url('../image/file logo/svg.svg');
+}
+
+.list-group-item span.template-name{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+#avatar-container, #avatar-img {
+    min-width: 150px;
+    min-height: 150px;
+}
+
+#avatar-container img {
+    width: 150px;
+    height: 150px;
+}
+
+#avatar-container .position-absolute {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    line-height: 36px;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.border-bottom-1 {
+    border-bottom: 1px solid #f2f2f2;
+}

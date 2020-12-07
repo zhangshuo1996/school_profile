@@ -1,0 +1,20 @@
+<div class="col-12 col-xl-4">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-header-title">完成量对比</h4>
+            {# 只有自己负责的，才显示可编辑按钮 #}
+            {% if current_user.org_id == department.id %}
+                <h4>
+                    <a href="{{ url_for('statistic_input.index', project_id=project_id) }}">
+                        <i class="fe fe-edit"></i> 编辑
+                    </a>
+                </h4>
+            {% endif %}
+        </div>
+        <div class="card-body p-0">
+            <div class="chart" style="height:450px">
+                <div id="complete_comparison_pie" class="chart-canvas"></div>
+            </div>
+        </div>
+    </div>
+</div>

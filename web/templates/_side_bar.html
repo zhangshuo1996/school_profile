@@ -1,0 +1,119 @@
+{# 内部使用了endpoint和**kwargs的值来判断当前url是否是active #}
+{# TODO:待修改 #}
+{% macro render_concrete_item(endpoint, text, use_li=False, is_active=False) %}
+    <a class="nav-item nav-link {{ is_active }}" href="{{ url_for(endpoint, **kwargs) }}">{{ text }}</a>
+{% endmacro %}
+
+
+<nav class="navbar navbar-vertical navbar-light fixed-left navbar-expand-md">
+    <div class="container-fluid">
+        <!-- Toggler -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarCollapse"
+                aria-controls="sidebarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Brand -->
+        <a class="dd-md-none" href="./index" >
+            <img src="{{ url_for('static', filename='image/logo_low.jpg') }}" class="img-fluid" alt="...">
+        </a>
+        <a href="./index" class="d-md-none avatar">
+            <img src="{{ url_for('static', filename='image/logo_low.jpg') }}" class="img-fluid" alt="...">
+        </a>
+
+        <!-- User (xs) -->
+        <div class="navbar-user d-md-none">
+             <!-- Dropup -->
+            <div class="dropdown">
+                <!-- Toggle -->
+                <a href="#" id="sidebarIconCopy" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="avatar avatar-sm avatar-online">
+                        <img src="{{ url_for("user.avatar", filename=current_user['avatar']) }}" class="avatar-img rounded-circle" alt="...">
+                    </div>
+                </a>
+
+                <!-- Menu -->
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sidebarIconCopy">
+{#                    {% if current_user.is_administrator %}#}
+{#                        <a href="{{ url_for('admin.index') }}" class="dropdown-item">#}
+{#                            <i class="fe fe-users"></i> 管理员</a>#}
+{#                        <hr s="dropdown-divider">#}
+{#                    {% endif %}#}
+                    <a href="{{ url_for('user.personal') }}" class="dropdown-item">
+                        <i class="fe fe-settings"></i> 账号设置</a>
+                    <hr class="dropdown-divider">
+                    <a href="{{ url_for('auth.logout')}}" class="dropdown-item"><i class="fe fe-log-out"></i> &nbsp; 注销</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse mt-3" id="sidebarCollapse">
+
+            <!-- Navigation -->
+            <ul class="navbar-nav">
+                {% set menus = current_user.category.menus | sorted_menus %}
+                {% set departments = current_user.get_departments() %}
+                {# 遍历渲染菜单 #}
+                {% for menu in menus %}
+                    {% set is_active = menu.blueprint == request.blueprint %}
+                    {% set has_sub_menu = menu.sub_menu and menu.sub_menu.name == 'ROLE' %}
+                    <li class="nav-item {% if is_active%}active{% endif %}">
+                        {# 是否有子菜单 通过name判断 #}
+                        {% if menu.sub_menu and menu.sub_menu.name == 'ROLE' %}
+                            <a href="#collapse-{{ loop.index }}" data-toggle="collapse" class="nav-link {% if is_active and not has_sub_menu %}active{% endif %}">
+                                {% if menu.icon %}
+                                    <i class="{{ menu.icon }}"></i>
+                                {% endif %}
+                                {{ menu.name }}
+                            </a>
+                            {# 遍历生成子菜单 #}
+                            <div id="collapse-{{ loop.index }}" class="collapse {% if request.endpoint == menu.endpoint or is_active %}show{% endif %}">
+                                <ul class="nav nav-sm flex-column">
+                                    {% for department in departments %}
+                                        <a class="nav-item nav-link"
+                                           href="{{ url_for(endpoint=menu.sub_menu.endpoint, department_id=department.id) }}">{{ department.name }}
+                                        </a>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                             <a href="{{ url_for(menu.endpoint) }}" class="nav-link {% if is_active %}active{% endif %}">
+                                {% if menu.icon %}
+                                    <i class="{{ menu.icon }}"></i>
+                                {% endif %}
+                                {{ menu.name }}
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- User (md) -->
+        <div class="navbar-user d-none d-md-flex" id="sidebarUser">
+            <!-- Dropup -->
+            <div class="dropup">
+                <!-- Toggle -->
+                <a href="#" id="sidebarIconCopy" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <div class="avatar avatar-sm avatar-online">
+                        <img src="{{ url_for("user.avatar", filename=current_user['avatar']) }}" class="avatar-img rounded-circle" alt="...">
+                    </div>
+                </a>
+                <!-- Menu -->
+                <div class="dropdown-menu" aria-labelledby="sidebarIconCopy">
+{#                    {% if current_user.is_administrator %}#}
+{#                        <a href="{{ url_for('admin.index') }}" class="dropdown-item">#}
+{#                            <i class="fe fe-users"></i> 管理员</a>#}
+{#                        <hr s="dropdown-divider">#}
+{#                    {% endif %}#}
+                    <a href="{{ url_for('user.personal') }}" class="dropdown-item">
+                        <i class="fe fe-settings"></i> 账号设置</a>
+                    <hr class="dropdown-divider">
+                    <a href="{{ url_for('auth.logout')}}" class="dropdown-item"><i class="fe fe-log-out"></i> &nbsp; 注销</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,22 @@
+# .gitignore
+
+
+.idea
+__pycache__/
+venv/
+env/
+uploads/
+
+uploads
+files
+test.html
+
+static/relation_data
+
+.flaskenv
+.env
+.pytest_cache
+tests/report
+config.py
+logs/*.txt
+test_faiss/

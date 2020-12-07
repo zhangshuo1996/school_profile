@@ -1,0 +1,29 @@
+{# 展示目录，需要directories 每个目录，必须有{link: '', name: ''} #}
+{# breadcrumbs 用于展示面包屑导航栏 [{link: '', name: ''}] #}
+{% extends 'base_header_breadcrumbs.html' %}
+
+{% block title %}文件库-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-group d-block">
+                    {% for dir in directories %}
+                        <li class="d-inline-block pr-3 pl-3 ">
+                            <a href="{% if 'args' in dir %}{{ url_for(dir.link, **dir.args) }}{% else %}{{ url_for(dir.link) }}{% endif %}"
+                               class="text-dark">
+                                <div class="list-group-item position-relative dir-logo normal"></div>
+                                <h4 class="dir-name text-center" title="{{ dir.name }}">{{ dir.name }}</h4>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,149 @@
+{#{% extends 'base.html' %}#}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+    <style>
+        .overflow{
+            width:330px;
+            overflow:hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            -o-text-overflow:ellipsis;
+        }
+        .box{
+             width: 300px;
+             height: 300px;
+             border: 1px solid red;
+            }
+        .box ul{
+             height: 300px;
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+            }
+
+         .box ul li{
+              list-style: none;
+              margin: 0 auto;
+              }
+    </style>
+{% endblock %}
+
+
+{% block main %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="nav-link" href="{{ url_for("school_profile.school_entrance") }}">
+            <span class="fe fe-home" style="font-size: 1.5rem"></span>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div style="height: 40px;">
+                <img src="{{ url_for("school_profile.school_logo", school=school) }}" height="40px" width="40px" class="" alt="..." style="">
+            </div>
+            <div style="margin: auto">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for("school_profile.index", school=school) }}"><h3>{{ school }}</h3> <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><h3>{{ institution }}</h3></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-3" style="padding-left: 100px; ">
+            <div class="card" >
+                <div class="card-header" id="institution_name">团队专利</div>
+                <div class="header-body">
+                    <div id="team_bar" style="height: 800px">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9" style=" ">
+            <div class="card" style="padding-right: 400px;">
+                <div class="card-header">学院社区</div>
+                <div class="header-body">
+                    <div id="institution-relation" style="height: 800px">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="card" id="team_achieve_card" style="position: fixed; z-index: 999; top: 140px; right: 100px; width: 400px;  height: 600px;">
+        <div class="card-header" id="team_patent_title">  </div>
+        <div class="header-body" style="max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+
+            <div id="team_patent" style="height: 250px; padding-left: 30px">
+
+            </div>
+
+        </div>
+
+        <div class="card-header" id="team_project_title">  </div>
+        <div class="header-body" style="max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+
+             <br>
+            <div id="team_project" style="height: 250px; padding-left: 30px">
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div class="card d-none" id="visit_status_card" style="position: fixed; z-index: 999; top: 240px; left: 250px; width: 250px;">
+        <div class="card-header" id="expert_name"> 请选择专家 </div>
+        <div class="header-body">
+            <div id="expert_info" style="height: 250px; padding-left: 30px">
+                <div class="">
+                    <span class="fe fe-user"></span> 性别: 男 <br>
+                    <span class="fe fe-book-open"></span> 职称: 教授 <br>
+                    <span class="fe fe-mail"></span> 邮箱: dafp@seu.edu.cn <br>
+                    <span class="fe fe-bookmark"></span> 专利: 13
+                </div>
+                <br>
+                <form>
+                    <input type="radio" class="visit_status" value="0" checked="checked"> 未联系过 <br>
+                    <input type="radio" class="visit_status" value="1"> 已联系过 <br>
+                    <input type="radio" class="visit_status" value="2"> 做过活动 <br>
+                    <input type="radio" class="visit_status" value="3"> 签过合同 <br>
+                    <input type="radio" class="visit_status" value="4"> 创业 <br>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/echarts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/create_graph.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/wordcloud2.js') }}"></script>
+
+    <script type="text/javascript">
+
+        let school = {{ school|tojson }};
+        let institution = {{ institution|tojson }};
+        let permission = {{ permission|tojson }};
+
+    </script>
+    <script src="{{ url_for('static', filename='js/school_profile/institution.js') }}" type="application/x-javascript"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/institution_tree.js') }}" type="application/x-javascript"></script>
+{% endblock %}

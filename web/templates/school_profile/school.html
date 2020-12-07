@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!--    <svg ></svg>-->
+    <div class="row">
+<!--        <div class="col-md-1"></div>-->
+        <div class="col-md-1">
+            <div id="list-example" class="list-group">
+              <a class="list-group-item list-group-item-action" href="#list-item-1">学校简介</a>
+              <a class="list-group-item list-group-item-action" href="#list-item-2">重点学科</a>
+              <a class="list-group-item list-group-item-action" href="#list-item-3">成果分布</a>
+            </div>
+        </div>
+       <div class="col-md-10">
+           <div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy-example">
+              <h4 id="list-item-1">学校简介</h4>
+                   <p id="expand">{{ introduction }}
+                       <a href="javascript:;">《收起</a>
+                      </p>
+
+              <h4 id="list-item-2">重点学科</h4>
+              <p>
+                  {% for key_discipline in key_discipline_list %}
+                    <span class="badge badge-secondary">{{ key_discipline }}</span>
+                  {% endfor %}
+              </p>
+              <h4 id="list-item-3">成果分布</h4>
+               <div id="svg1">
+
+                </div>
+
+            </div>
+       </div>
+        <div class="col-md-1"></div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/lib/d3.js') }}"></script>
+
+    <script type="text/javascript">
+        console.log("-----------------77777");
+        var transport = {
+            "school": {{ school|tojson }},
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/school.js') }}" type="module"></script>
+{% endblock %}

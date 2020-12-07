@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+{% endblock %}
+
+{% block main %}
+
+    <div class="container-fluid" style="padding-top: 50px">
+        <div class="card" style="height: 800px" >
+            <div class="card-header">
+
+            </div>
+            <div class="card-body" id="school_industry_level_compare_bubble">
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/create_graph.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/school_profile/school_bubble.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{ unit_name }}-共分类网络
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid">
+        {# 根据条件，输出多选框或面包屑导航栏 #}
+        <nav aria-label="breadcrumb">
+            <div class="row">
+                <div class="col">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" id="unit" data-category="{{ category }}">{{ unit_name }}</li>
+                    </ol>
+                </div>
+            </div>
+        </nav>
+    {# 共分类网络 #}
+    {% include 'patent_map/_coclassification_network.html' %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/dist/echarts.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/statistics/create_graph.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/patent_map/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/patent_map/show_graph.js') }}"></script>
+
+    <script>
+        IPC_COMMUNITIES_URL = "{{ url_for('patent_network.get_ipc_communities') }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/patent_map/show_graph_unit_name.js') }}"></script>
+{% endblock %}

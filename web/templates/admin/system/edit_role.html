@@ -1,0 +1,127 @@
+{% extends 'admin/base.html' %}
+{% block title %}编辑系统角色{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="header">
+                    <div class="header-body">
+                        <!-- Nav -->
+                        <div class="row align-items-end">
+                            <div class="col">
+                                <h2>编辑角色信息</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{ url_for('system.role_modify', role_id=role['id']) }}" id="form-role-modify"
+                              method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <div class="form-row">
+
+                                <div class="col">
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label for="" class="col-2">角色名</label>
+                                        <div class="col pl-4">
+                                            <input type="text" name="name" id="name" class="form-control"
+                                                   value="{{ role['name'] }}" required="required">
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label class="col-2">角色类别</label>
+                                        <div class="col pl-4">
+
+                                            <select name="category" id="category" class="form-control">
+                                                {% for category in categories %}
+                                                    {% if category['id']==role['category'] %}
+                                                        <option value="{{ category['id'] }}"
+                                                                selected>{{ category['name'] }}</option>
+                                                    {% else %}
+                                                        <option value="{{ category['id'] }}">{{ category['name'] }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label for="" class="col-2">所属部门</label>
+                                        <div class="col pl-4">
+                                            <select name="department" id="department" class="form-control">
+                                                {% for department in departments %}
+                                                    {% if department['id']==role['department'] %}
+                                                        <option value="{{ department['id'] }}"
+                                                                selected>{{ department['name'] }}</option>
+                                                    {% else %}
+                                                        <option value="{{ department['id'] }}">{{ department['name'] }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <label class="col-2">权限选择</label>
+                                        <div class="col pl-4">
+                                            {% for permission in permissions %}
+                                                {% if permission['id'] in role.permissions %}
+                                                    <input type="checkbox" name="permissions[]"
+                                                           value={{ permission['id'] }}
+                                                                   id={{ permission['name'] }} checked="checked">&ensp;
+                                                    <label for={{ permission['name'] }}>{{ permission['name'] }}</label>
+                                                    <br>
+                                                {% else %}
+                                                    <input type="checkbox" name="permissions[]"
+                                                           value={{ permission['id'] }}
+                                                                   id={{ permission['name'] }}>
+                                                    <label for={{ permission['name'] }}>{{ permission['name'] }}</label>
+                                                    <br>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="form-row p-3 border-bottom-1 ">
+                                        <div class="col pl-4">
+                                            <div style="text-align:center">
+                                                <button type="submit" id="btn-submit-form"
+                                                        class="btn btn-primary float">确定
+                                                </button>
+                                                <button type="button" class="btn btn-primary float"
+                                                        onclick="javascript:history.back(-1);">返回
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
+
+{% endblock %}

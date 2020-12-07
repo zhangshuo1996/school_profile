@@ -1,0 +1,24 @@
+{% extends 'show_files_base.html' %}
+
+{% block title %}
+    活动文件-昆山开发区科技局信息系统
+{% endblock %}
+
+{% block header_nav %}
+    <div class="row align-items-end">
+        <div class="col">
+            <ul class="nav nav-tabs nav-overflow header-tabs pb-3">
+                {{ render_nav_item('activity.show_base_info', '通知', activity_id=activity.id) }}
+                {% if can_read %}
+                    {{ render_nav_item('activity.show_files', '文件', activity_id=activity.id) }}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block main %}
+{#    {% include 'activity/_nav.html' %}#}
+    {{ super() }}
+{% endblock %}

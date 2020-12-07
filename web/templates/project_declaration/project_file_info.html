@@ -1,0 +1,149 @@
+{# 待删除 #}
+{% extends 'base_header_breadcrumbs.html' %}
+{% from 'macros.html' import render_contents %}
+
+{% block title %}企业申报文件-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+{% endblock %}
+
+{% block header_nav %}
+    <div class="row align-items-end">
+        <div class="col">
+            <ul class="nav nav-tabs nav-overflow header-tabs pb-3">
+                {{ render_nav_item('project_declaration.project_task_info', '计划', distribute_id=detail.id) }}
+                {{ render_nav_item('project_declaration.project_file_info', '文件', distribute_id=detail.id) }}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <td class="nowrap">文件名</td>
+                            <td class="nowrap">创建者</td>
+                            <td class="nowrap">上传时间</td>
+                            <td class="text-right nowrap">
+                                <label class="hover-primary cursor-pointer my-0 mx-3" data-toggle="modal"
+                                       data-target="#template-policy-modal">
+                                    <i class="fe fe-eye"></i>政策</label>
+                                {% if can_write %}
+                                    <label for="upload-file" class="hover-primary cursor-pointer my-0"><i
+                                            class="fe fe-upload-cloud"></i>上传</label>
+                                {% endif %}
+                                <form action="{{ url_for('file.upload_file') }}" class="d-none" id="form-upload-file"
+                                      method="post"
+                                      enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="match_id" value="{{ detail.id }}">
+                                    <input type="hidden" name="category" value="{{ 1 }}">
+                                    <input type="hidden" name="ep_id" value="{{ detail.ep_id }}">
+                                    <input name="upload_file" autocomplete='off' type="file" accept="application/pdf"
+                                           id="upload-file">
+                                </form>
+                            </td>
+                        </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% for file in file_list %}
+                            <tr>
+                                <td style="width: 40%;">
+                                    <a href="{{ url_for('file.download_file', file_id=file['file_id']) }}"
+                                       class="d-flex align-items-center">
+                                        <span class="file-logo mr-3 {{ file["attach"]|postfix }}"></span>
+                                        {{ file["attach"] }}
+                                    </a>
+                                </td>
+                                <td>{{ file["uploader"] }}
+                                </td>
+                                <td class="nowrap">{{ file["gmt_create"] }}</td>
+                                {% if can_write %}
+                                    <td class="text-right">
+                                        <form method="post" action="{{ url_for('file.delete_file') }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="file_id" value="{{ file.file_id }}">
+                                            <button type="submit" class="btn btn-link"
+                                                    onclick="if(confirm('确定删除该文件?')==false)return false;">
+                                                <span class="btn-delete text-danger" title="删除文件">
+                                                    <i class="fe fe-x-circle"></i>
+                                                </span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="template-policy-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">政策文件</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group" id="policy-list">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script>
+        $("#upload-file").on("change", function () {
+            $("#form-upload-file").submit();
+        });
+        $(document).ready(function () {
+            let id = {{ detail.project_id }};
+            $.ajax({
+                url: "/ajax/project/policy",
+                data: {"id": id},
+                dataType: "json",
+                success: function (data) {
+                    fill_template(data, $("#policy-list"));
+                }
+            });
+            $.ajax({
+                url: "/ajax/project/project_case",
+                data: {"id": id},
+                dataType: "json",
+                success: function (data) {
+                    fill_template(data, $("#project-case-list"));
+                }
+            });
+
+        });
+
+        function fill_template(data, $target) {
+            let list = [];
+            if (data['files'].length == 0) {
+                list.push(`<li class="list-group-item text-center">无文件</li>`);
+            }
+            for (let i in data['files']) {
+                list.push(`<a href="/download_by_path/${data.dir_path}/${data['files'][i]}">
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="file-logo pdf"></span>
+                                <span class="template-name mr-3 ml-3">${data['files'][i]}</span>
+                            </li>
+                       </a>`)
+            }
+            $target.html(list.join(""));
+        }
+    </script>
+{% endblock %}

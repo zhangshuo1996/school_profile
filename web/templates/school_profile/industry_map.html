@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+    <style>
+
+    </style>
+{% endblock %}
+
+
+{% block main %}
+
+    <div class="container-fluid">
+
+        <div class="header bg-dark py-0">
+            <div class="container-fluid">
+                <div class="header-body pt-0">
+                    <div class="row align-items-end">
+                        <div class="col">
+                            <h6 class="header-pretitle text-dark"></h6>
+                            <h2 class="header-title text-white">
+                                产学研
+                            </h2>
+                        </div>
+                        <div class="col-auto">
+{#                            <ul class="nav nav-tabs header-tabs" id="ep-category-on-map">#}
+{#                                    <li class="nav-item" data-toggle="chart">#}
+{#                                        <a href="#" class="nav-link pt-0 text-center active"#}
+{#                                           data-toggle="tab" >#}
+{#                                            <h3 class="text-white mb-0">{{ category }}</h3>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                            </ul>#}
+                        </div>
+                    </div>
+                </div>
+                <div class="header-footer p-0" style="height: 800px">
+                    <div id="main">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/echarts.js') }}"></script>
+{#    <script src="{{ url_for('static', filename="js/school_profile/create_graph.js") }}"></script>#}
+{#    <script src="{{ url_for("static", filename='js/school_profile/kunshan.js') }}"></script>#}
+{#    <script src="{{ url_for('static', filename="js/school_profile/iur_province_map.js") }}"></script>#}
+{#    <script src="{{ url_for('static', filename="js/school_profile/iur_city_map.js") }}"></script>#}
+{#    <script src="{{ url_for('static', filename="js/school_profile/iur_china_map.js") }}"></script>#}
+{#    <script src="{{ url_for('static', filename="js/school_profile/activity.js") }}"></script>#}
+{#    <script src="{{ url_for('static', filename='js/school_profile/iur.js') }}"></script>#}
+
+    <!--引入高德地图JSAPI -->
+    <script src="//webapi.amap.com/maps?v=2.0&key=	1d83dd57a4720665155adffd4e504495"></script>
+
+    <!--引入UI组件库（1.1版本） -->
+    <script src="//webapi.amap.com/ui/1.1/main.js"></script>
+
+    <script src="{{ url_for('static', filename='js/school_profile/industry_map.js') }}"></script>
+
+
+    <script type="text/javascript">
+
+        {#let school = {{ school|tojson }};#}
+        {#let institution = {{ institution|tojson }};#}
+        {#let permission = {{ permission|tojson }}#}
+    </script>
+{#    <script src="{{ url_for('static', filename='js/school_profile/institution.js') }}" type="application/x-javascript"></script>#}
+{% endblock %}

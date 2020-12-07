@@ -1,0 +1,103 @@
+{# 展示文件的base.html，如显示文件，请继承本模板 #}
+{# 使用本模板前的可选参数 #}
+{# can_write 是否具有可编辑权限 #}
+{# card_title 卡片标题 #}
+{# container 请选择 container 或者container-fluid #}
+{% extends 'base_header_breadcrumbs.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+{% endblock %}
+
+{% block header_right %}
+    {% if can_write %}
+        <div class="col-auto">
+            <label for="upload_file" class="btn btn-primary my-0"><i
+                    class="fe fe-upload-cloud"></i>上传</label>
+            {{ render_form(form, id="form-upload-file", action="/file/upload_file", extra_classes="d-none") }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    <div class="{{ container | default('container-fluid') }}">
+{#    <div class="container-fluid'">#}
+        <div class="card">
+{#            <div class="card-header">#}
+{#                <h4 class="modal-title">{{ card_title | default('文件') }}</h4>#}
+                {# 是否可以上传附件 #}
+{#                {% if can_write %}#}
+{#                    <div class="card-header-tabs">#}
+{#                        <label for="upload_file" class="hover-primary cursor-pointer my-0"><i#}
+{#                                class="fe fe-upload-cloud"></i>上传</label>#}
+{#                        {{ render_form(form, id="form-upload-file", action="/file/upload_file", extra_classes="d-none") }}#}
+{#                    </div>#}
+{#                {% endif %}#}
+{#            </div>#}
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>更新时间</th>
+                            <th>创建者</th>
+                            {% if can_write %}
+                                <th>操作</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% if files | length == 0 %}
+                            <tr><td colspan="{% if can_write %}4{% else %}3{% endif %}" class="text-center">暂无提交文件</td></tr>
+                        {% endif %}
+                        {% for file in files %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('file.download_file', file_id=file.id) }}"
+                                       class="d-flex align-items-center text-dark">
+                                        <span class="file-logo mr-3 {{ file.filename | postfix }}"></span>
+                                        {{ file.filename }}</a>
+                                </td>
+                                <td>
+                                    {% set time=datetime.fromtimestamp(file.gmt_create) %}
+                                    <span data-toggle="tooltip" data-placement="top" data-delay="500"
+                                          data-timestamp="{{ time.strftime('%Y-%m-%dT%H:%M:%S') }}">
+                                        {{ moment(time, local=True).fromNow(refresh=True) }}
+                                    </span>
+                                </td>
+                                <td>{{ file.uploader }}</td>
+                                {% if can_write %}
+                                <td>
+                                    <form method="post" action="{{ url_for('file.delete_file') }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="file_id" value="{{ file.id }}">
+                                        <button type="submit" class="btn btn-link" onclick="return confirm('确定删除该文件？')">
+                                            <span class="btn-delete text-danger"><i class="fe fe-x-circle"></i></span>
+                                        </button>
+                                    </form>
+                                </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ moment.include_moment(local_js=url_for('static', filename='js/dist/moment-with-locales.min.js')) }}
+    <script>
+        let time_tooltip = 0;
+        $("#upload_file").on("change", function (e) {
+            if ($("#upload_file").val()) {
+                $("#form-upload-file").submit();
+            }
+        });
+        moment.locale('zh-cn');
+    </script>
+{% endblock %}

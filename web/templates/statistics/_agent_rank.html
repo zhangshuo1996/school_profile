@@ -1,0 +1,34 @@
+<div class="col-12 col-xl-8">
+    <!-- Convertions -->
+    <div class="card">
+        <div class="card-header" id="AgentRankHeader">
+            <!-- Title -->
+            <h4 class="card-header-title">
+                中介对比
+            </h4>
+            <ul class="nav nav-tabs nav-tabs-sm card-header-tabs">
+                <li class="nav-item" data-toggle="chart" data-target="#ConversionsChart"
+                    data-trigger="click"
+                    data-action="toggle" data-dataset="0">
+                    <a class="nav-link active" href="#" data-toggle="tab"
+                       onclick="setAgentRank('activity')">
+                        活动
+                    </a>
+                </li>
+                <li class="nav-item" data-toggle="chart" data-target="#ConversionsChart"
+                    data-trigger="click"
+                    data-action="toggle" data-dataset="1">
+                    <a class="nav-link" href="#" data-toggle="tab" onclick="setAgentRank('declaration')">
+                        申报
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body p-0">
+            <!-- Chart -->
+            <div class="chart" style="height:450px">
+                <div id="AgentRank" class="chart-canvas"></div>
+            </div>
+        </div>
+    </div>
+</div>

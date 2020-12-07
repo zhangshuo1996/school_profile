@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+        <title>{% block title %}昆山开发区科技局信息系统{% endblock %}</title>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+        <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=CXarKKMKBd6t5CGxs0s8rUGs2qhyniII"></script>
+        {% block styles %}{% endblock %}
+        <style>
+            #alert-box-success,
+            #alert-box-danger{
+                position: fixed;
+                width: 350px;
+                top: 20%;
+                left: 50%;
+                transform: translateX(-175px);
+                z-index: 9999;
+                text-align: center;
+            }
+            .hidden{
+                display: none;
+            }
+        body{
+            background: #ffffff;
+        }
+        #inputGroup-sizing-sm{
+            padding: 0;
+            border: none;
+            cursor: pointer;
+        }
+        #inputGroup-sizing-sm .input-group-text{
+            border-right: none;
+            background: white;
+        }
+        </style>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="navbar-header">
+        <a class="navbar-brand thumbnail" href="{{ url_for('enterprise_portrait.index') }}" style="font-family: 楷体; font-size: 30px">区域科技型企业画像系统</a>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav ml-auto">
+                <li class="clearfix"><a class="nav-item nav-link active float-right" href="{{ url_for('enterprise_portrait.get_industry_statistic') }}">企业行业总览</a></li>
+                <li class="clearfix"><a class="nav-item nav-link active float-right" href="{{ url_for('enterprise_portrait.patent_info') }}">企业专利总览</a></li>
+            </ul>
+    </div>
+</nav>
+
+<main>
+    {# 消息 #}
+    {% for message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{ message[0] }} text-center" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message[1] }}
+    </div>
+    {% endfor %}
+    {% block main %}
+    {% endblock %}
+</main>
+<div id="alert-box-success" class="alert alert-success hidden">
+    <strong><i class="mdui-icon material-icons">&#xe86c;</i><span class="alert-message">提交成功，等待管理员审核</span></strong>
+</div>
+<div id="alert-box-danger" class="alert alert-danger hidden">
+    <strong><i class="mdui-icon material-icons">&#xe000;</i><span class="alert-message">提交失败，请稍后再试</span></strong>
+</div>
+<footer>
+    {% block footer %}
+    {% endblock %}
+</footer>
+<script>
+    /**
+ * 显示/隐藏提示框
+ * @param {boolean} isSuccess
+ * @param {string} modal 模态框id, 用于隐藏模态框
+ * @param {string} message 用于显示的消息
+ */
+function toggle_alert(isSuccess, modal, message = ""){
+    if(modal){
+        $(`#${modal}`).modal("hide");
+    }
+
+    let alert_success = $("#alert-box-success");
+    let alert_error = $("#alert-box-danger");
+    // 显示操作成功的提示框
+    if(isSuccess){
+        alert_error.hide();
+
+        if(message){
+            alert_success.find('.alert-message').text(message);
+        }
+
+        alert_success.show(200);
+        setTimeout(()=>{
+            alert_success.hide(200);
+        }, 2500)
+    }else{
+        alert_success.hide();
+
+        if(message){
+            alert_error.find('.alert-message').text(message);
+        }
+
+        alert_error.show(200);
+        setTimeout(()=>{
+            alert_error.hide(200);
+        },2500);
+    }
+}
+</script>
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/bootstrap_v4.min.js') }}"></script>
+{% endblock %}
+</body>
+</html>

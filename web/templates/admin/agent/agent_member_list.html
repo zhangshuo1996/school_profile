@@ -1,0 +1,98 @@
+{% extends '/admin/base.html' %}
+
+{% block title %}{{ agent_name }}-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+{% endblock %}
+
+{% block main %}
+    <!-- HEADER -->
+    <div class="header">
+        <div class="container-fluid">
+            <!-- Body -->
+            <div class="header-body">
+                <div class="row align-items-end">
+                    <div class="col">
+                        <h1 class="header-title">{{ agent_name }}-成员列表</h1>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary lift" data-toggle="modal"
+                                onclick="javascript:window.location.href='{{ url_for('agent.agent_member_add') }}'">
+                            <i class="fe fe-plus"></i> 添加成员
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>姓名</th>
+                            <th>所属中介</th>
+                            <th>职称</th>
+                            <th>联系电话</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% for item in agent_data %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ item['name'] }}</td>
+                                <td>{{ agent_name }}</td>
+                                <td>{{ item['position'] }}</td>
+                                <td>{{ item['telephone'] }}</td>
+                                <td>
+                                    <div style="display:inline">
+                                        <div id="div1" style="float:left">
+                                            <button data-toggle="tooltip" title="编辑" class="pd-setting-ed"
+                                                    onclick="javascript:window.location.href='{{ url_for('agent.agent_member_modify', member_id = item['id']) }}'">
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                        </div>
+                                        <div id="div2" style="float:left">
+                                            <form action="{{ url_for('agent.agent_member_delete', member_id = item['id']) }}"
+                                                  method="POST">
+                                                <input type="hidden" title="删除" name="csrf_token" value="{{ csrf_token() }}"/>
+                                                <button type="submit" onclick="return window.confirm('确定删除该人员信息？')"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if agent_data|length == 0 %}
+                            <tr>
+                                <td colspan="6" class="text-center">暂无中介人员</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
+{% endblock %}

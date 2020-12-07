@@ -1,0 +1,81 @@
+{% extends 'admin/auth/base.html' %}
+
+{% block styles %}
+    <style>
+    .tab{
+        cursor: pointer;
+    }
+    </style>
+{% endblock %}
+
+{% block title %}用户登录-昆山开发区科技局信息系统{% endblock %}
+
+{% block login_form %}
+    <div class="card border-primary mb-3 m-auto pt-2 pb-2">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item nav-link active tab" id="password_type" data-target="password">账号密码登录</li>
+                <li class="nav-item nav-link tab" id="code_type" data-target="verification_code">验证码登录</li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <form method="post" id="login-by-account" class="form-signin" action="{{ url_for('auth.login') }}">
+                <div class="text-primary">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.telephone(class="form-control", placeholder="请输入手机号") }}
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            {{ form.password(class="form-control", placeholder="请输入密码") }}
+                        </div>
+                    </div>
+                    {# 验证码登录 #}
+                    <div class="form-group d-none">
+                        <div class="input-group">
+                            {{ form.verification_code(class="form-control", placeholder="请输入验证码") }}
+                            <div class="input-group-append">
+                                <button type="button" id="get_verification_code" class="btn btn-outline-secondary">
+                                    获取验证码
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <div class="col">
+                        {{ form.remember }}
+                        {{ form.remember.label }}
+                    </div>
+                    <div class="col-auto">
+                        <a href="/admin/auth/password_reset" class="text-sm-right" target="_blank">忘记密码？</a>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    {{ form.submit(class="form-control btn-block btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx388ad8c0421c8cd2&redirect_uri=http%3A//325i1950e3.qicp.vip&response_type=code&scope=snsapi_login#wechat_redirect">
+                <svg class="Zi Zi--WeChat Login-socialIcon" fill="#60c84d" viewBox="0 0 24 24" width="20" height="20"><path d="M2.224 21.667s4.24-1.825 4.788-2.056C15.029 23.141 22 17.714 22 11.898 22 6.984 17.523 3 12 3S2 6.984 2 11.898c0 1.86.64 3.585 1.737 5.013-.274.833-1.513 4.756-1.513 4.756zm5.943-9.707c.69 0 1.25-.569 1.25-1.271a1.26 1.26 0 0 0-1.25-1.271c-.69 0-1.25.569-1.25 1.27 0 .703.56 1.272 1.25 1.272zm7.583 0c.69 0 1.25-.569 1.25-1.271a1.26 1.26 0 0 0-1.25-1.271c-.69 0-1.25.569-1.25 1.27 0 .703.56 1.272 1.25 1.272z" fill-rule="evenodd"></path></svg>
+                <span class="text-muted">微信登录</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,207 @@
+{#{% extends 'base.html' %}#}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+    <style>
+        .table>tbody>tr>td{
+            border:0px;
+        }
+        .table th, .table td {
+            vertical-align: middle!important;
+        }
+        ul{
+            list-style-type: none;
+        }
+
+        table td {
+            height: 25px;
+            line-height: 25px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        table td:hover { /* 鼠标滑过  显示隐藏的内容  伴有横向的滚动条 */
+            overflow: auto;
+            text-overflow: clip;
+        }
+        .mytable tr td {
+            /* for IE */
+            text-overflow: ellipsis;
+            /* for Firefox,mozilla */
+            -moz-text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: left
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+{#    <div class="row">#}
+{#        <div class="col-md-9" style="padding-left: 100px; height: 100px; width: 1500px;padding-top: 20px; padding-right: 100px">#}
+{#            <div style="height:120px; background-image: url({{ url_for("school_profile.school_header_background", school=school) }}); background-repeat: no-repeat; background-size: cover">#}
+{#                <img src="{{ url_for("school_profile.school_header_logo", school=school) }}" height="80px" width="200px" class="" alt="..." style="padding-top: 20px;">#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <div class="" style="position: fixed; right: 60px; top:10px; z-index: 999">#}
+{#        <div style="padding-top: 50px; width: 400px;" id="search_div">#}
+{#            <form method="post"  action="{{ url_for("school_search.hunt") }}">#}
+{#                <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}"/>#}
+{#                <div class="input-group input-group-newsletterp">#}
+{#                    <div class="col-md-9">#}
+{#                        <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="在{{ school }}内检索相关成果及团队">#}
+{#                        <input type="text" class="d-none" name="school" id="school" value="{{ school }}">#}
+{#                    </div>#}
+{#                    <div class="col-md-3">#}
+{#                        <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索">#}
+{#                    </div>#}
+{#                </div>#}
+{#            </form>#}
+{#        </div>#}
+{#    </div>#}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <a class="nav-link" href="{{ url_for("school_profile.school_entrance") }}"><h3>HOME</h3></a>
+          <div style="width: 1600px" align="right">
+              <form method="post"  action="{{ url_for("school_search.hunt") }}" style="width: 400px; ">
+                    <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="input-group input-group-newsletterp">
+                        <div class="col-md-9">
+                            <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="检索相关成果及团队">
+                            <input type="text" class="d-none" name="school" id="school" value="{{ "" }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="检索">
+                        </div>
+
+                    </div>
+                </form>
+          </div>
+      </div>
+    </nav>
+
+    <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-6" style="padding-right: 100px;">
+        {#    显示检索文本框textArea    #}
+        <div class="row" style="padding-top: 40px; padding-left: 140px; height: 200px">
+            <div class="card" id="my_textarea_div" style="">
+                <textarea class="form-control input-lg" type="text" placeholder="{{ input_key }}" style="width: 800px; height:150px;" name="input_key" id="my_text_area"></textarea>
+            </div>
+        </div>
+        {#    显示页码    #}
+        <div class="row" style="padding-top: 40px;padding-left: 120px; padding-right: 30px; ">
+            {#    显示左箭头    #}
+            <div id="last_page" style="padding-left: 10px;">
+                <span class="fe fe-chevrons-left move-page" style="font-size: 2rem"></span>
+            </div>
+            {#    显示页码    #}
+            <div class="col-md-6 text-center" style="margin: 0 auto;">
+                <nav aria-label="..." >
+                  <ul class="pagination pagination-sm justify-content-center" id="show_index">
+
+                  </ul>
+                </nav>
+            </div>
+            {#    显示右箭头    #}
+            <div id="next_page" style="">
+                <span class="fe fe-chevrons-right move-page" style="font-size: 2rem"></span>
+            </div>
+
+        </div>
+
+        {#    显示检索结果    #}
+        <div class="row" style="padding-top: 40px;">
+            <div class="" id="download_ele" style="padding-left: 140px;width: 800px">
+                <div class="container-fluid" id="search_outcome" style="width:800px;  ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#    显示雷达图和个人关系图    #}
+    <div class="col-md-4">
+        <div class="row" >
+            <div class="" style="height: 400px; width:600px; margin: 0 auto" id="team_radar_div">
+                <div class="card">
+                    <div class="card-header" id="radar_graph_header">**团队科研水平评估</div>
+                    <div class="card-body" style="height: 240px" id="team-radar">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="" style="height: 600px; top: 500px; width: 600px; margin: 0 auto; " id="team_relation_chart_div">
+                <div class="card">
+                    <div class="card-header" id="leader_name">**团队合作关系</div>
+                    <div class="card-body" style="height: 450px" id="team-relation-chart">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+{#    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>#}
+    <script src="{{ url_for('static', filename='js/school_profile/echarts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/create_graph.js') }}"></script>
+    <script>
+        let transport = {
+            "data": {{ data|tojson }},
+            "type": {{ type|tojson }},
+            "input_key": {{ input_key|tojson }},
+        };
+        let school = {{ school|tojson }};
+
+        $(document).ready(function () {
+            resize();
+        });
+
+         $(window).resize(function() {
+            resize();
+
+        });
+
+         function resize() {
+            {# let windowWidth = window.innerWidth ;#}
+            {#let windowHeight = window.innerHeight ;#}
+            {#let w1 = windowWidth / 2.4;  // 800#}
+            {#let w2 = windowWidth / 2.6;  // 720#}
+            {#let w3 = windowWidth / 2.5;#}
+            {#let w4 = windowWidth / 2.2;   // 870#}
+            {#let w5 = windowWidth / 4.8;   // 870#}
+            {#let h1 = windowHeight / 6.4;#}
+            {#let h2 = windowHeight / 3.2;#}
+            {##}
+            {#let padding_left1 = windowWidth / 24;#}
+            {#debugger;#}
+            {##}
+            {#$("#my_textarea_div").attr("style", "width: " + w2 + "px; padding-left: 90px;");#}
+            {#$("#my_text_area").attr("style", "width:" + w2 + "px; height:200px;");#}
+            {#$("#search_outcome").attr("style", "width: " + w1 + "px;");#}
+            {#$("#team_radar_div").attr("style", "width: "+ w3 +"px; height: "+h1+"px; position: fixed; top: 120px; right: "+padding_left1+"px;");#}
+            {#$("#team_relation_chart_div").attr("style", "width: " + w3 + "px; height: "+h1+"px; position: fixed; top: 500px; right: "+padding_left1+"px;");#}
+            {#$("#next_page").attr("style", "position: fixed; right: "+w4+"px; top:360px");#}
+            {#$("#search_div").attr("style", "padding-top: 50px; width: "+w5+"px;");#}
+
+         }
+
+    </script>
+    <script src="{{ url_for('static', filename='js/school_profile/search_outcome.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/profile_net.js') }}"></script>
+
+{% endblock %}

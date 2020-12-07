@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}企业申报-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block main %}
+    <!-- HEADER -->
+    <div class="header">
+        <div class="container-fluid">
+            <!-- Body -->
+            <div class="header-body">
+                <div class="row align-items-end">
+                    <div class="col">
+{#                        {% if current_user.category == 2 %}#}
+                            <h2 class="header-title">{{ project_name }}</h2>
+{#                        {% endif %}#}
+                    </div>
+                        <div class="col-auto row">
+                            <a href="javascript:void(0)" class="nav-link">
+                                <label for="upload-file" class="cursor-pointer mb-0"><i
+                                        class="fe fe-upload-cloud"></i>上传名单</label>
+                                <form action="{{ url_for("statistic_input.upload_namelist")}}" method="post" class="d-none"
+                                      id="form-upload-file"
+                                      enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+                                    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                           name="namelist_file" id="upload-file" autocomplete='off'>
+                                    <input type="hidden" name="project_id" value="{{ project_id }}">
+                                </form>
+                            </a>
+                            <a class="nav-link active" href="{{ url_for("statistic_input.download_namelist", project_id=project_id, project_name=project_name) }}">
+                                导出名单
+                            </a>
+                            <a class="nav-link active" href="{{ url_for("statistic_input.download_file") }}" >
+                                下载模板
+                            </a>
+                        </div>
+                        <div class="col-auto">
+
+                        </div>
+                        <div class="col-auto">
+
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary lift" data-toggle="modal" data-target="#newProjectModal">
+                                <i class="fe fe-plus"></i> 添加记录
+                            </button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>企业</th>
+                                <th>备注</th>
+                                <th>年份</th>
+                                <th>上传者</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% for item in items %}
+                            <tr>
+                                <td class="nowrap">
+                                    {{ loop.index}}
+                                </td>
+                                <td class="nowrap">
+                                    {{ item["ep_name"]}}
+                                </td>
+                                <td class="nowrap">
+                                    {{ item["remarks"]}}
+                                </td>
+                                <td class="nowrap">
+                                    {{ item["year"] }}
+                                </td>
+                                <td class="nowrap">
+                                    {{ item["uploader"] }}
+                                </td>
+                                <td>
+                                    <form action="{{ url_for("statistic_input.delete_record") }}"
+                                                  method="post" class="d-inline">
+                                        <input type="hidden" name="record_id" value="{{ item["id"] }}">
+                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-link" onclick="return confirm('确定删除该记录?')">
+                                            <span class="btn-delete text-danger"><i class="fe fe-x-circle"></i></span>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if items | length == 0 %}
+                            <tr>
+                                <td colspan="6" class="text-center">暂无记录</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="newProjectModal" role="dialog" aria-labelledby="taskOperateModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="taskOperateModalLabel">添加记录</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+{#                    <form class="form-horizontal" action="{{ url_for('project.invite_ep_attend_project') }}"#}
+                    <form class="form-horizontal" action="{{ url_for('statistic_input.add_record') }}"
+                          method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="modal-body">
+                            <div class="form-row">
+                                <label class="col-sm-2 col-form-label">企业</label>
+                                <div class="col-10">
+                                    <input type="hidden" name="project_id" value="{{ project_id }}">
+                                    <input  type="text" class="form-control" name="ep_name">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-sm-2 col-form-label">备注</label>
+                                <div class="col-10">
+                                    <input  type="text" class="form-control" name="remarks">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-sm-2 col-form-label">年份</label>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" name="year" id="year">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" id="submit-task" class="btn btn-primary">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/select2.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            let year = new Date().getFullYear();
+            $('#year').val(year);
+        });
+    </script>
+
+    <script>
+        $("#upload-file").on("change", function () {
+            $("#form-upload-file").submit();
+        });
+    </script>
+{% endblock %}

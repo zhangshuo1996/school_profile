@@ -1,0 +1,164 @@
+{#{% extends 'base.html' %}#}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+    <style>
+
+        .overflow{
+            width:330px;
+            overflow:hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            -o-text-overflow:ellipsis;
+        }
+        {#.mybox {#}
+        {#    height: 30px;#}
+        {#    overflow-x: hidden;#}
+        {#    overflow-y: auto;#}
+        {#    line-height: 30px;#}
+        {#    text-align: center;#}
+        {#}#}
+        {#.mybox::-webkit-scrollbar {#}
+        {#    display: ;#}
+        {#}#}
+        .table>tbody>tr>td{
+            border:0px;
+        }
+        .table th, .table td {
+            vertical-align: middle!important;
+        }
+        ul{
+            list-style-type: none;
+        }
+
+        table td {
+            height: 25px;
+            line-height: 25px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        table td:hover { /* 鼠标滑过  显示隐藏的内容  伴有横向的滚动条 */
+            overflow: auto;
+            text-overflow: clip;
+        }
+        .mytable tr td {
+            /* for IE */
+            text-overflow: ellipsis;
+            /* for Firefox,mozilla */
+            -moz-text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: left
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="nav-link" href="{{ url_for("school_profile.school_entrance") }}">
+        <span class="fe fe-home" style="font-size: 1.5rem"></span>
+    </a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div style="height: 40px;">
+            <img src="{{ url_for("school_profile.school_logo", school=school) }}" height="40px" width="40px" class="" alt="..." style="">
+        </div>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for("school_profile.index", school=school) }}"><h3>{{ school }}</h3> <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+
+<div class="row">
+    <div class="col-md-2">
+
+        <div class="card" style="padding-left: 50px; padding-top: 20px; height: 100%">
+            <div class="row">
+              <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                  <a class="nav-link active" id="v-pills-lab-tab" data-toggle="pill" href="#v-pills-lab" role="tab" aria-controls="v-pills-lab" aria-selected="true">国家重点实验室<span class="badge badge-secondary">{{ labs | length }}</span></a>
+                  <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">一级学科<span class="badge badge-secondary">{{ disciplines | length }}</span></a>
+                  <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">学院<span class="badge badge-secondary">{{ institutions | length }}</span></a>
+                </div>
+              </div>
+              <div class="col-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-lab" role="tabpanel" aria-labelledby="v-pills-lab-tab">
+                    <br>
+                    {% for lab in labs %}
+                    <p class="overflow" style="width:180px;" title="{{ lab["lab"] }}">{{ lab["lab"] }}</p>
+                    {% endfor %}
+                    </div>
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                            <br>
+                            {% for discipline in disciplines %}
+                                <p>{{ discipline["discipline"] }} - <span class="badge badge-success">{{ discipline["result"] }}</span> </p>
+                            {% endfor %}
+                        </div>
+                    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        <br>
+                        {% for institution in institutions %}
+                            <p>{{ institution }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-7" style="">
+        <div class="card">
+            <div class="header-body">
+                <div id="school_industry_level_compare_bubble" style="height: 800px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3" style=" height: 480px; padding-right: 50px;">
+        <div class="card" >
+            <div class="card-header">{{ school }}主要行业分布</div>
+            <div class="header-body">
+                <div id="school_industry_pie" style="height: 300px;">
+
+                </div>
+            </div>
+        </div>
+        <div class="card" >
+            <div class="card-header">{{ school }}各项指标评估</div>
+            <div class="header-body">
+                <div id="school-radar" style="height: 300px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/echarts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/create_graph.js') }}"></script>
+    <script>
+        let school = {{ school|tojson }};
+        let data = {{ data|tojson }};
+
+    </script>
+    <script src="{{ url_for('static', filename='js/school_profile/profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/school_profile/school_treemap.js') }}"></script>
+{% endblock %}

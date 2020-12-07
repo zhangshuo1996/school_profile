@@ -1,0 +1,374 @@
+{% extends 'base_header_breadcrumbs.html' %}
+{#{% from 'macros.html' import render_nav_item %}#}
+{#项目下的任务以及文件#}
+
+{% block title %}企业申报计划-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/gantt/frappe-gantt.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+    <style>
+        #task-distribute-list .list-group-item {
+            height: 37px;
+            line-height: 37px;
+        }
+
+        #show_service_provider {
+            position: fixed;
+            right: -500px;
+            top: 101px;
+            bottom: 0;
+            width: 500px;
+            background: whitesmoke;
+            text-align: center;
+            z-index: 999;
+            transition: right 0.5s ease;
+            -moz-transition: right 0.5s ease;
+            -webkit-transition: right 0.5s ease;
+            -o-transition: right 0.5s ease;
+        }
+
+        #show_service_provider .selector-container {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: center;
+        }
+
+        #show_service_provider .position-relative {
+            overflow-y: scroll;
+            height: 100%;
+        }
+
+        {##arrow {#}
+        {#    width: 40px;#}
+        {#    height: 50px;#}
+        {#    position: absolute;#}
+        {#    top: 50%;#}
+        {#    left: -40px;#}
+        {#    margin-top: -25px;#}
+        {#    font-size: 50px !important;#}
+        {#    color: #0000ee;#}
+        {#}#}
+        {##}
+        {##arrow.show {#}
+        {#    transform: rotate(180deg);#}
+        {#    -moz-transform: rotate(180deg);#}
+        {#    -webkit-transform: rotate(180deg);#}
+        {#    -o-transform: rotate(180deg);#}
+        {#}#}
+        .img-36{
+            width: 36px;
+            height: 36px;
+            display: inline-block;
+            background-color: #eee;
+        }
+        .image-cycle{
+            border-radius: 50%;
+        }
+        li{
+            line-height: 20px;
+        }
+
+
+    </style>
+{% endblock %}
+
+
+{% block header_nav %}
+    <div class="row align-items-end">
+        <div class="col">
+            <ul class="nav nav-tabs nav-overflow header-tabs pb-3">
+                {{ render_nav_item('project_declaration.project_task_info', '计划', distribute_id=detail.id) }}
+                {{ render_nav_item('project_declaration.project_file_info', '文件', distribute_id=detail.id) }}
+                <span class="ml-auto mr-4" id="arrow" style="font-size: 20px">
+                    <i class="fe fe-users pb-2"  title="显示服务商"></i>
+                </span>
+                <span style="font-size: 20px" id="arrow2">
+                    <i class="fe fe-user-plus pb-2" title="新增服务商"></i>
+                </span>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid">
+        <div class="card">
+{#            <div class="card-header">#}
+{##}
+{#                <div class="card-header-tabs">#}
+{#                    <div class="btn-group" id="btn-group">#}
+{#                        <span class="btn btn-light" data-type="Year">年</span>#}
+{#                        <span class="btn btn-light" data-type="Month">月</span>#}
+{#                        <span class="btn btn-light active" data-type="Week">周</span>#}
+{#                        <span class="btn btn-light" data-type="Day">日</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="row">
+                <div class="col-3 pr-0">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-header-title text-truncate">任务分配</h4>
+                            {% if can_write %}
+                                <div class="card-header-tabs" id="add_task" data-toggle="modal"
+                                     data-target="#add_task_modal">
+                                    <span class="btn btn-white btn-sm" style="border-style: dashed">
+                                        <i class="fe fe-plus"></i>
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-body py-0 pr-0" id="task-distribute-list">
+                            <div class="list-group list-group-flush" id="show_tasks"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-9 pl-0">
+                    <svg id="gantt"></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="template-list-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">更新任务</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form">
+                        <div class="form-row">
+                            <label for="update_task_name" class="col-sm-2 col-form-label">任务名称</label>
+                            <div class="col-10">
+                                <input type="text" id="update_task_name" class="form-control" value="知识产权">
+                                <input type="hidden" id="update_task_id" class="d-none" value="">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="update_executor" class="col-sm-2 col-form-label">执行人员</label>
+                            <div class="col-10">
+                                <select type="text" class="form-control" id="update_executor">
+                                    <option value="企业">企业</option>
+                                    <option value="中介">中介</option>
+                                    {% for sp in all_sp %}
+                                        <option value="{{ sp.name }}">{{ sp.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="update_task_status" class="col-sm-2 col-form-label">任务状态</label>
+                            <div class="col-10">
+                                <select type="text" class="form-control" id="update_task_status">
+                                    <option value="0">待分配</option>
+                                    <option value="1">进行中</option>
+                                    <option value="2">已完成</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-sm-2 col-form-label">起止时间</label>
+                            <div class="col-10">
+                                <div class="form-row justify-content-between">
+                                    <div class="col-auto pl-0">
+                                        <input type="date" class="form-control" id="update_start" max="{{ detail.deadline }}">
+                                    </div>
+                                    -
+                                    <div class="col-auto pr-0">
+                                        <input type="date" class="form-control" id="update_end" max="{{ detail.deadline }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+{#                            <label for="add_task_executor" class="col-sm-2 col-form-label">起止时间</label>#}
+                            <label class="col-sm-2 col-form-label">任务文件</label>
+                          <div class="custom-file">
+                            <input name="upload_file" type="file" class="custom-file-input" accept="application/pdf" id="update_task_file">
+                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">选择文件</label>
+                          </div>
+                        </div>
+{#                        <div class="form-row">#}
+{#                            <label class="col-sm-2 col-form-label">任务文件</label>#}
+{#                            <div class="col-10">#}
+{#                                <input name="upload_file" autocomplete='off' type="file" accept="application/pdf" id="update_task_file">#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="checkbox" id="update-default" class="cursor-pointer"><label for="update-default" class="cursor-pointer">设为默认选项</label>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary" id="update_submit">提交</button>
+                                <button class="btn btn-danger" id="delete_submit">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="add_task_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">新增任务</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form">
+                        <div class="form-row">
+                            <label for="add_task_name" class="col-sm-2 col-form-label">任务名称</label>
+                            <div class="col-10">
+                                <input id="add_task_name" type="text" class="form-control" placeholder="请输入任务名">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="add_task_executor" class="col-sm-2 col-form-label">执行人员</label>
+                            <div class="col-10">
+                                <select type="text" class="form-control" id="add_task_executor">
+                                    <option value="企业">企业</option>
+                                    <option value="中介">中介</option>
+                                    {% for sp in all_sp %}
+                                        <option value="{{ sp.name }}">{{ sp.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="add_task_executor" class="col-sm-2 col-form-label">起止时间</label>
+                            <div class="col-10">
+                                <div class="form-row d-flex justify-content-between">
+                                    <div class="col-auto pl-0">
+                                        <input id="add_task_start" type="date" class="form-control" value="2020-05-28" max="{{ detail.deadline }}">
+                                    </div>
+                                    -
+                                    <div class="col-auto pr-0">
+                                        <input id="add_task_end" type="date" class="form-control" max="{{ detail.deadline }}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+{#                            <label for="add_task_executor" class="col-sm-2 col-form-label">起止时间</label>#}
+                            <label class="col-sm-2 col-form-label">任务文件</label>
+                          <div class="custom-file">
+                            <input name="upload_file" type="file" class="custom-file-input" accept="application/pdf" id="upload_task_file">
+                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">选择文件</label>
+                          </div>
+                        </div>
+
+{#                        <div class="form-row">#}
+{#                            <label class="col-sm-2 col-form-label">任务文件</label>#}
+{#                            <div class="col-10">#}
+{#                                <input name="upload_file" autocomplete='off' type="file" accept="application/pdf" id="upload_task_file">#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="checkbox" id="add_task_default" class="cursor-pointer"><label for="add_task_default" class="cursor-pointer">设为默认选项</label>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary" id="add_task_button">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="show_service_provider">
+        <div class="position-relative">
+            <table class="table table-striped table-bordered">
+                <thead>
+                <th>服务商</th>
+                <th>负责人</th>
+                <th>联系方式</th>
+                <th>操作</th>
+                </thead>
+                <tbody class="list" id="show_sp_info_table">
+
+                </tbody>
+            </table>
+
+        </div>
+{#        <div id="arrow" class="fe fe-chevron-left cursor-pointer">#}
+{#        </div>#}
+    </div>
+
+    <div class="modal fade" id="add_sp_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">增加服务商</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form">
+                        <div class="form-row">
+                            <label class="col-sm-2 col-form-label">服务商名字</label>
+                            <div class="col-10">
+                                <input type="text" id="sp_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-sm-2 col-form-label">服务商类型</label>
+                            <div class="col-10">
+                                <select type="text" class="form-control" id="sp_category">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-sm-2 col-form-label">负责人名字</label>
+                            <div class="col-10">
+                                <input type="text" id="charger_name" class="form-control">
+                            </div>
+                        </div>
+                         <div class="form-row">
+                            <label class="col-sm-2 col-form-label">负责人电话</label>
+                            <div class="col-10">
+                                <input type="text" id="telephone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-auto">
+                                <button class="btn btn-primary" id="add_sp_submit">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script>
+        let ep_id ={{ detail.ep_id|safe }};
+        let distribute_project_id = {{ detail.id|safe }};
+        let project_id = {{ detail.project_id|safe }};
+        let user_type = {{ current_user.category_id }};
+        let can_write = {{ can_write|tojson }};
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain){
+                        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                    }
+            }
+        });
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/gantt/frappe-gantt.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/project_declaration/show_task.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/project_declaration/add_task.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/project_declaration/update_task.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/project_declaration/show_sp.js') }}"></script>
+{% endblock %}

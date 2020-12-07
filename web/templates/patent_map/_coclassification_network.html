@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-header-title">行业专利</h4>
+                <a class="{% if not category %}d-none{% endif %}" id="recommend"
+                   href="{{ url_for('patent_network.recommend_unites', category=category, unit_name=unit_name) }}">
+                    <i class="fe fe-home"></i>
+                    {% if category == 'district' %}
+                        高校推荐
+                    {% elif category == 'school' %}
+                        区县推荐
+                    {% endif %}
+                </a>
+            </div>
+            <div class="card-body">
+                <div style="width:100%;height: 580px;" id="patent_comparison"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-header-title">共分类网络</h4>
+                <span class="text-muted" id="classification_help" data-toggle="tooltip" data-placeholder="left"
+                      title="共分类网络 TODO">
+                    <i class="fe fe-help-circle"></i>
+                    帮助
+                </span>
+            </div>
+            <div class="card-body">
+                <div style="width:100%;height: 580px;" id="rules"></div>
+            </div>
+        </div>
+    </div>
+</div>

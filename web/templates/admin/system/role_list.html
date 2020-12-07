@@ -1,0 +1,106 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}角色管理-昆山开发区科技局信息系统{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+{% endblock %}
+
+{% block main %}
+    <!-- HEADER -->
+    <div class="header">
+        <div class="container-fluid">
+            <!-- Body -->
+            <div class="header-body">
+                <div class="row align-items-end">
+                    <div class="col">
+                        <h1 class="header-title">系统角色列表</h1>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary lift" data-toggle="modal"
+                                onclick="javascript:window.location.href='{{ url_for('system.role_add') }}'">
+                            <i class="fe fe-plus"></i> 添加角色
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-table">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>类别</th>
+                            <th>角色</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="file-container">
+                        {% for role in data %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    {% for category in categories %}
+                                        {% if role['category'] == category['id'] %}
+                                            {{ category['name'] }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ role['name'] }}</td>
+                                <td>
+                                    <div style="display:inline">
+                                        <div id="div1" style="float:left">
+                                            <button data-toggle="tooltip" title="编辑" class="pd-setting-ed"
+                                                    onclick="javascript:window.location.href='{{ url_for('system.role_modify', role_id = role['id']) }}'">
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if data|length == 0 %}
+                            <tr>
+                                <td colspan="6" class="text-center">暂无角色</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function display(ths) {
+            var $td = $(ths).parent().parent().children();
+            var name = $td.eq(0).text();
+            console.log(name)
+            document.getElementById(name).style.display = "";
+        }
+    </script>
+    <script>
+        function display_add(name) {
+            document.getElementById(name).style.display = "";
+        }
+    </script>
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        //在确保请求不属于GET HEAD OPTIONS TRACE，并且发向站内，才设置csrf_token
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
+{% endblock %}
