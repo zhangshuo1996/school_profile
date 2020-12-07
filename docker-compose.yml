@@ -8,7 +8,7 @@ services:
  nginx:
   build: ./nginx
   ports:
-  - "8080:8080"
+  - "6438:6438"
   volumes:
    - .:/code
   links:
