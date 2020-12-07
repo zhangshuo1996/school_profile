@@ -155,6 +155,7 @@ function show_team_bar(sort_type="member_num") {
         left: '3%',
         right: '4%',
         bottom: '3%',
+        top: '1%',
         containLabel: true
     },
     xAxis: [
