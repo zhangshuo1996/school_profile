@@ -1,12 +1,6 @@
-from .activity import activity_bp
-from .auth import auth_bp
+# from .auth import auth_bp
 from .main import main_bp
-from .project_declaration.project_declaration import project_declaration_bp
-from .storage.file import file_bp
-from .storage.storage import storage_bp
-from .user.user import user_bp
-from .admin.system import system_bp
-from .admin.gov import gov_bp
-from .admin.agent import agent_bp
-from .statistics import statistics_bp
-from .statistic_input import statistic_input_bp
+# from .admin.system import system_bp
+# from .admin.gov import gov_bp
+# from .admin.agent import agent_bp
+# from .statistic_input import statistic_input_bp

@@ -13,7 +13,7 @@ school_profile_bp = Blueprint("school_profile", __name__)
 
 
 @school_profile_bp.route("/school_card", methods=["POST", "GET"])
-@login_required
+# @login_required
 def school_card():
     """
     展示学校卡片
@@ -39,8 +39,9 @@ def school_entrance():
     :return:
     """
     # 1. 获取常用的几所学校
-    user_id = current_user.id
-    used_schools = profile_service.get_used_schools(user_id)
+    # user_id = current_user.id
+    # used_schools = profile_service.get_used_schools(user_id)
+    used_schools = ["东南大学", "浙江大学", "南京大学", "清华大学", "华南理工大学"]
     # 2. 获取各区域的几所学校
     province_list, province_school_list = profile_service.get_province_school()
     # 3. 获取所有高校
@@ -49,7 +50,7 @@ def school_entrance():
 
 
 @school_profile_bp.route("/index/<school>")
-@login_required
+# @login_required
 def index(school):
     """
     画像展示界面,
@@ -69,7 +70,7 @@ def index(school):
 
 
 @school_profile_bp.route("/school_logo/<school>")
-@login_required
+# @login_required
 def school_logo(school):
     """
     寻找头像
@@ -79,7 +80,7 @@ def school_logo(school):
 
 
 @school_profile_bp.route("/school_header_logo/<school>")
-@login_required
+# @login_required
 def school_header_logo(school):
     """
     展示学校画像中最上方的图片
@@ -100,7 +101,7 @@ def industry_level_logo(level):
 
 
 @school_profile_bp.route("/school_header_background/<school>")
-@login_required
+# @login_required
 def school_header_background(school):
     """
     展示学校画像中最上方的图片
@@ -110,7 +111,7 @@ def school_header_background(school):
 
 
 @school_profile_bp.route("/school_profile_cover")
-@login_required
+# @login_required
 def school_profile_cover():
     """
     展示高校画像封面
@@ -120,7 +121,7 @@ def school_profile_cover():
 
 
 @school_profile_bp.route("/get_institution_patent_num")
-@login_required
+# @login_required
 def get_institution_patent_num():
     """
     获取某一学校各学院的专利数量
@@ -132,19 +133,20 @@ def get_institution_patent_num():
 
 
 @school_profile_bp.route("/institution_profile/<school>/<institution>")
-@login_required
+# @login_required
 def institution_profile(school, institution):
     """
     展示学院内的画像，包括学院内部的社交关系 以及 学院内部的各项指标评估
     :return:
     """
-    user_id = current_user.id
-    permission = profile_service.get_school_permission_by_user(user_id, school)
+    # user_id = current_user.id
+    # permission = profile_service.get_school_permission_by_user(user_id, school)
+    permission = "WRITE"
     return render_template("school_profile/institution.html", school=school, institution=institution, permission=permission)
 
 
 @school_profile_bp.route("/get_institution_relation")
-@login_required
+# @login_required
 def get_institution_relation():
     """
     获取学院内部的社交关系
@@ -161,7 +163,7 @@ def get_institution_relation():
 
 
 @school_profile_bp.route("/get_institution_dimension_info")
-@login_required
+# @login_required
 def get_institution_dimension_info():
     """
     获取学院内部的各项指标评估
@@ -174,7 +176,7 @@ def get_institution_dimension_info():
 
 
 @school_profile_bp.route("/get_team_dimension_info")
-@login_required
+# @login_required
 def get_team_dimension_info():
     """
     获取团队的各维度信息
@@ -192,7 +194,7 @@ def get_team_dimension_info():
 
 
 @school_profile_bp.route('/get_school_normalize_dimension_score')
-@login_required
+# @login_required
 def get_school_normalize_dimension_score():
     """
     获取学校归一化之后的各维度分数
@@ -204,7 +206,7 @@ def get_school_normalize_dimension_score():
 
 
 @school_profile_bp.route("/update_node_visit_status")
-@login_required
+# @login_required
 def update_node_visit_status():
     """
     更新节点的拜访状态：0未联系过、1联系过、2做过活动、3签过合同、4创业
@@ -252,7 +254,7 @@ def industry_compare(school, industry):
 
 
 @school_profile_bp.route("/get_institution_industry_patent_num2")
-@login_required
+# @login_required
 def get_institution_industry_patent_num2():
     """
     获取某学校下 各学院中的行业对应的成果数量 以及  学院本身的成果数量， 用于生成矩形树图

@@ -80,7 +80,7 @@ function show_community_relation() {
  * 获取学院内部的关系数据
  */
 function get_institution_relation() {
-    // institution_relation_chart.showLoading();
+    institution_relation_chart.showLoading();
     $.ajax({
         type: "get",
         url: "/school/profile/get_institution_relation",
@@ -93,7 +93,7 @@ function get_institution_relation() {
             teacher_id_name_dict = team_info.teacher_id_name_dict;
             team_id_info_dict = team_info.team_id_info_dict;
             show_team_bar();
-            // reloadGraph("force");
+            reloadGraph("force");
             show_team_patent_project_data();
             return true;
         }

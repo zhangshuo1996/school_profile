@@ -13,19 +13,19 @@ school_search_bp = Blueprint("school_search", __name__)
 
 
 @school_search_bp.route('/')
-@login_required
+# @login_required
 def index():
     return render_template('base.html')
 
 
 @school_search_bp.route("/test")
-@login_required
+# @login_required
 def test():
     return render_template("school_profile/search_outcome.html")
 
 
 @school_search_bp.route('/hunt', methods=["POST"])
-@login_required
+# @login_required
 def hunt():
     """
     搜索路由
@@ -61,7 +61,7 @@ def hunt():
 
 
 @school_search_bp.route('/getTeamRelation')
-@login_required
+# @login_required
 def getTeamRelation():
     """
     获取该团队的关系数据
@@ -83,7 +83,7 @@ def getTeamRelation():
 
 
 @school_search_bp.route("/avatar/<filename>")
-@login_required
+# @login_required
 def avatar(filename):
     """
     寻找头像
@@ -93,7 +93,7 @@ def avatar(filename):
 
 
 @school_search_bp.route("/get_pdf", methods=["POST"])
-@login_required
+# @login_required
 def get_pdf3():
     """
     获取搜索结果中 第i个 团队对应的pdf
