@@ -227,7 +227,8 @@ def format_data(nodes, institution):
             sub_children.append({
                 "name": teacher_id_info_dict[teacher_id]["name"],
                 "value": teacher_id_info_dict[teacher_id]["patent"],
-                "depth": 2
+                "depth": 2,
+                "id": teacher_id
             })
         children.append({
             "name": leader_name + "团队",

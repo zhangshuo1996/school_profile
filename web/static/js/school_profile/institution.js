@@ -1,5 +1,7 @@
 let team_bar_chart = getEChartsObject("team_bar");
 let institution_relation_chart = getEChartsObject("institution-relation");
+let institution_tree_chart = getEChartsObject("institution-relation");
+
 let team_id_dict = {}; // 序号： team_id
 let data = undefined;  // 后端传过来的关系原始数据
 let expert_id = undefined;
@@ -67,12 +69,14 @@ show_community_relation();
  * 显示社区关系图
  */
 function show_community_relation() {
-    if(data === undefined){ // 如果关系数据未定义，请求关系数据
-        get_institution_relation(1);
-    }else{  // 如果关系数据已定义，直接使用
-        let graph_data = convert_graph_data(data, 1);
-        reloadGraph(graph_data, "force", 1);
-    }
+    get_institution_relation(1);
+    // if(data === undefined){ // 如果关系数据未定义，请求关系数据
+    //     get_institution_relation(1);
+    // }else{  // 如果关系数据已定义，直接使用
+    //     let graph_data = convert_graph_data(data, 1);
+    //     debugger;
+    //     reloadGraph(graph_data, "force", 1);
+    // }
 }
 
 
@@ -472,6 +476,7 @@ function reloadGraph(layout="circular"){
     graphOption.series[0].links = links;
     graphOption.series[0].layout = layout;
     institution_relation_chart.clear();
+    debugger;
     institution_relation_chart.setOption(graphOption);
     institution_relation_chart.hideLoading();
 }
@@ -589,6 +594,17 @@ function show_select_team(expert_id=team_id) {
  * 关系图点击事件， 显示该专家的主要专利和主要项目
  */
 institution_relation_chart.on("click", function (params) {
-    expert_id = params.data.name;
-    show_team_patent_project_data(expert_id);
+    if(params.data.depth != undefined && params.data.depth <= 1){
+        debugger;
+        return;
+    }
+    if(params.data.depth == undefined){
+        debugger;
+        expert_id = params.data.name;
+        show_team_patent_project_data(expert_id);
+    }else{
+        debugger;
+        expert_id = params.data.id;
+        show_team_patent_project_data(expert_id);
+    }
 });
