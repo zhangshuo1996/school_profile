@@ -24,7 +24,7 @@ def test():
     return render_template("school_profile/search_outcome.html")
 
 
-@school_search_bp.route('/hunt', methods=["POST"])
+@school_search_bp.route('/hunt', methods=["GET", "POST"])
 # @login_required
 def hunt():
     """
@@ -35,8 +35,9 @@ def hunt():
     input_key = request.form.get("input_key")
     # school = request.form.get("school")
     school = ""  # 暂时不使用school这个参数
-    user_id = current_user.id
-    permission = profile_service.get_school_permission_by_user(user_id, school)
+    # user_id = current_user.id
+    # permission = profile_service.get_school_permission_by_user(user_id, school)
+    permission = "WRITE"
     # if permission == "READ":
     #     flash("您沒有搜索权限, 请向管理员申请", "danger")
     #     return redirect_back()
@@ -92,7 +93,7 @@ def avatar(filename):
     return send_from_directory(avatar_path, filename + '.png')
 
 
-@school_search_bp.route("/get_pdf", methods=["POST"])
+@school_search_bp.route("/get_pdf", methods=["GET", "POST"])
 # @login_required
 def get_pdf3():
     """
