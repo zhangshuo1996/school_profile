@@ -170,6 +170,14 @@ function show_team_bar(sort_type="member_num") {
             axisTick: {
                 show: false
             },
+            axisLabel: {
+                show: true,
+                textStyle: {
+                    color: '#000',
+                    // fontSize: '38',//字体大小
+                },
+                fontSize: 15,//字体大小
+            },
             data: []
         }
     ],

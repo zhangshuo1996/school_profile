@@ -95,7 +95,12 @@ function set_bubble_option(diskData){
                 visibleMin: 300,
                 label: {
                     show: true,
-                    formatter: ' {b}'
+                    formatter: ' {b}',
+                    color: "rgba(13, 0, 0, 1)",
+                    // fontWeight: "lighter",
+                    fontSize: 15,
+                    textBorderColor: "transparent",
+                    textBorderWidth: 1,
                 },
                 itemStyle: {
                     borderColor: '#fff'

@@ -131,7 +131,7 @@ def get_cooperate_rel_by_team_id_list(school, institution, team_id_list, patent_
     """
     try:
         cql = """
-                   match p=(u1:University)-[:include]-(t1:Teacher)-[r:cooperate]-(t2:Teacher)-[:include]-(u2:University)
+                   match p=(u1:University)-[:include]-(i1:Institution)-[:include]-(t1:Teacher)-[r:cooperate]-(t2:Teacher)-[:include]-(i2:Institution)-[:include]-(u2:University)
                     where u1.name = \"{school}\"
                     and t1.team in [{ids_str}] and t2.team in [{ids_str}] 
                     and t1.patent > 0 
@@ -191,10 +191,10 @@ def get_institution_cooperate_rel_by_team_id_list2(school, team_id_list, institu
     # try:
     cql = """
     
-                match p=(u1:University)-[:include]-(t1:Teacher)-[r:cooperate]-(t2:Teacher)-[:include]-(u2:University)
+                match p=(u1:University)-[:include]-(i1:Institution)-[:include]-(t1:Teacher)-[r:cooperate]-(t2:Teacher)-[:include]-(i2:Institution)-[:include]-(u2:University)
                 where u1.name = \"{school}\"
-                and (t1.team in [{ids_str}] 
-                and t1.institution = \"{institution}\" and t2.institution = \"{institution}\")
+                and (t1.team in [{ids_str}]  and t2.id<>t2.team
+                and i1.name = \"{institution}\" )
                 return t1.id,t1.name, t1.request_status, t1.institution, t1.visit_status, t1.patent, t1.school_id, t1.industry, 
                 t1.team,t2.id,t2.name, t2.request_status, t2.institution, t2.visit_status, t2.patent, t2.school_id, t2.industry, t2.team,r.frequency
             """
@@ -212,9 +212,9 @@ def get_leader_list_in_institution(school, institution):
     :return:
     """
     cql = """
-        match p=(u1:University)-[:include]-(t1:Teacher)
+        match p=(u1:University)-[:include]-(i1:Institution)-[:include]-(t1:Teacher)
         where u1.name = \"{school}\" 
-        and t1.institution = \"{institution}\" and t1.team = t1.id
+        and i1.name = \"{institution}\" and t1.team = t1.id
         return t1.team
         order by t1.member desc limit 15
     """
