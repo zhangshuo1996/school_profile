@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from flask.logging import default_handler
 from flask import Flask, render_template, current_app, url_for, request
+from flask_oidc import OpenIDConnect
 from flask_sqlalchemy import get_debug_queries
 from logging.handlers import RotatingFileHandler
 
@@ -12,6 +13,9 @@ from web.blueprints import main_bp
 from web.blueprints.school_profile import school_search_bp
 from web.blueprints.school_profile import school_profile_bp
 from web.extensions import db, bootstrap, login_manager, csrf, ckeditor, moment
+
+oidc = OpenIDConnect()
+
 
 
 def create_app(config_name=None):
@@ -74,6 +78,8 @@ def register_extensions(app):
     csrf.init_app(app)
     ckeditor.init_app(app)
     moment.init_app(app)
+    oidc.init_app(app)
+
 
 
 def register_blueprints(app):

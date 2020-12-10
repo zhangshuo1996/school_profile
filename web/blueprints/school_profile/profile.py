@@ -1,7 +1,7 @@
 """
 画像部分
 """
-from flask import Blueprint, current_app, send_from_directory
+from flask import Blueprint, current_app, send_from_directory, Flask
 from flask import render_template, request
 from flask_login import current_user, login_required
 from web.service.school_profile import RelationshipService as relationService
@@ -11,9 +11,13 @@ import logging
 
 school_profile_bp = Blueprint("school_profile", __name__)
 
+from web import oidc
+
 
 @school_profile_bp.route("/school_card", methods=["POST", "GET"])
 # @login_required
+@oidc.require_login
+@oidc.require_keycloak_role("KETD", "user")
 def school_card():
     """
     展示学校卡片
@@ -33,6 +37,8 @@ def school_card():
 
 
 @school_profile_bp.route("/school_entrance")
+@oidc.require_login
+@oidc.require_keycloak_role("KETD", "user")
 def school_entrance():
     """
     高校画像入口 学校 检索框
