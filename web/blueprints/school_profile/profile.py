@@ -6,12 +6,11 @@ from flask import render_template, request
 from flask_login import current_user, login_required
 from web.service.school_profile import RelationshipService as relationService
 from web.service.school_profile import profile as profile_service
+from web.extensions import oidc
 import time
 import logging
 
 school_profile_bp = Blueprint("school_profile", __name__)
-
-from web import oidc
 
 
 @school_profile_bp.route("/school_card", methods=["POST", "GET"])
@@ -56,6 +55,8 @@ def school_entrance():
 
 
 @school_profile_bp.route("/index/<school>")
+@oidc.require_login
+@oidc.require_keycloak_role("KETD", "user")
 # @login_required
 def index(school):
     """

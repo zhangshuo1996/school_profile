@@ -3,7 +3,6 @@ import logging
 from datetime import datetime
 from flask.logging import default_handler
 from flask import Flask, render_template, current_app, url_for, request
-from flask_oidc import OpenIDConnect
 from flask_sqlalchemy import get_debug_queries
 from logging.handlers import RotatingFileHandler
 
@@ -12,10 +11,7 @@ from web.blueprints import main_bp
 
 from web.blueprints.school_profile import school_search_bp
 from web.blueprints.school_profile import school_profile_bp
-from web.extensions import db, bootstrap, login_manager, csrf, ckeditor, moment
-
-oidc = OpenIDConnect()
-
+from web.extensions import db, bootstrap, login_manager, csrf, ckeditor, moment, oidc
 
 
 def create_app(config_name=None):
@@ -45,6 +41,16 @@ def create_app(config_name=None):
     return app
 
 
+def register_extensions(app):
+    oidc.init_app(app)
+    db.init_app(app)
+    bootstrap.init_app(app)
+    # login_manager.init_app(app)
+    csrf.init_app(app)
+    ckeditor.init_app(app)
+    moment.init_app(app)
+
+
 def register_logging(app):
     app.logger.setLevel(logging.INFO)
 
@@ -69,17 +75,6 @@ def register_request_handlers(app):
                     % (q.duration, q.context, q.statement)
                 )
         return response
-
-
-def register_extensions(app):
-    db.init_app(app)
-    bootstrap.init_app(app)
-    # login_manager.init_app(app)
-    csrf.init_app(app)
-    ckeditor.init_app(app)
-    moment.init_app(app)
-    oidc.init_app(app)
-
 
 
 def register_blueprints(app):

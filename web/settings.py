@@ -39,6 +39,16 @@ class BaseConfig(object):
     DECLARATION = "DECLARATION"
     POLICY = "POLICY"
 
+    # Keycloak设置
+    # SECRET_KEY= 'SomethingNotEntirelySecret'
+    OIDC_CLIENT_SECRETS = 'client_secrets.json'
+    OIDC_ID_TOKEN_COOKIE_SECURE = False
+    OIDC_REQUIRE_VERIFIED_EMAIL = False
+    OIDC_USER_INFO_ENABLED = True
+    OIDC_OPENID_REALM = 'kunshan'
+    OIDC_SCOPES = ['openid']
+    OIDC_INTROSPECTION_AUTH_METHOD = 'client_secret_post'
+
 
 class DevelopmentConfig(BaseConfig):
     """开发环境配置"""

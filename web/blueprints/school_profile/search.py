@@ -5,8 +5,9 @@ from web.service.school_profile.PatentSearchService import PatentSearchService
 from web.service.school_profile import RelationshipService as relationService
 from web.service.school_profile import profile as profile_service
 from web.utils.url import redirect_back
-import logging
 from web.utils import make_pdf
+from web.extensions import oidc
+import logging
 import time
 
 school_search_bp = Blueprint("school_search", __name__)
@@ -25,6 +26,8 @@ def test():
 
 
 @school_search_bp.route('/hunt', methods=["GET", "POST"])
+# @oidc.require_login
+# @oidc.require_keycloak_role("KETD", "user")
 # @login_required
 def hunt():
     """
@@ -58,7 +61,7 @@ def hunt():
         return render_template("school_profile/search_outcome.html", input_key=input_key, outcome_paper_list=[],
                                data=outcome_patent_dict, type="teacher", school=school, permission=permission)
     else:
-        return render_template('school_profile/search.html')
+        return redirect_back()
 
 
 @school_search_bp.route('/getTeamRelation')
