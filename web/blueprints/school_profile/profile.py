@@ -63,10 +63,10 @@ def index(school):
     #     return redirect_back()
 
     labs = profile_service.get_school_lab(school=school)
-    disciplines = profile_service.get_school_discipline(school)
+    # disciplines = profile_service.get_school_discipline(school)
     institutions = profile_service.get_institution_list(school)
     data = profile_service.get_institution_industry_distribution(school)
-    return render_template("school_profile/profile.html", school=school, labs=labs, institutions=institutions, disciplines=disciplines, data=data)
+    return render_template("school_profile/profile.html", school=school, labs=labs, institutions=institutions, data=data)
 
 
 @school_profile_bp.route("/school_logo/<school>")

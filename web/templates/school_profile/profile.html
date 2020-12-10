@@ -84,7 +84,7 @@
               <div class="col-3">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                   <a class="nav-link active" id="v-pills-lab-tab" data-toggle="pill" href="#v-pills-lab" role="tab" aria-controls="v-pills-lab" aria-selected="true">国家重点实验室<span class="badge badge-secondary">{{ labs | length }}</span></a>
-                  <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">一级学科<span class="badge badge-secondary">{{ disciplines | length }}</span></a>
+<!--                  <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">一级学科<span class="badge badge-secondary">{{ disciplines | length }}</span></a>-->
                   <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">学院<span class="badge badge-secondary">{{ institutions | length }}</span></a>
                 </div>
               </div>
@@ -96,12 +96,12 @@
                     <p class="overflow" style="width:180px;" title="{{ lab["lab"] }}">{{ lab["lab"] }}</p>
                     {% endfor %}
                     </div>
-                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                            <br>
-                            {% for discipline in disciplines %}
-                                <p>{{ discipline["discipline"] }} - <span class="badge badge-success">{{ discipline["result"] }}</span> </p>
-                            {% endfor %}
-                        </div>
+<!--                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">-->
+<!--                            <br>-->
+<!--                            {% for discipline in disciplines %}-->
+<!--                                <p>{{ discipline["discipline"] }} - <span class="badge badge-success">{{ discipline["result"] }}</span> </p>-->
+<!--                            {% endfor %}-->
+<!--                        </div>-->
                     <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
                         <br>
                         {% for institution in institutions %}

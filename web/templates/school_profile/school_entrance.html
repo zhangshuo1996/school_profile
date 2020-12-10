@@ -29,14 +29,14 @@
             <div class="col-md-6" style="align: center">
 
                 <div style="height: 100px; width: 1200px;" >
-                  <form method="post"  action="{{ url_for("school_search.hunt") }}" style="width: 800px; margin: 0 auto;">
+                  <form method="post"  action="{{ url_for("school_search.hunt") }}" style="width: 1000px; margin: 0 auto;">
                         <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="input-group input-group-newsletterp">
-                            <div class="col-md-10">
+                            <div class="col-md-11">
                                 <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="检索相关成果及团队">
                                 <input type="text" class="d-none" name="school" id="school" value="{{ "东南大学" }}">
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="检索">
                             </div>
                         </div>
