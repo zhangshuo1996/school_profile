@@ -1,6 +1,5 @@
 from flask import Blueprint, current_app, flash
 from flask import render_template, request, send_from_directory
-from flask_login import login_required, current_user
 from web.service.school_profile.PatentSearchService import PatentSearchService
 from web.service.school_profile import RelationshipService as relationService
 from web.service.school_profile import profile as profile_service

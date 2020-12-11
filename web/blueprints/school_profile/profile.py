@@ -1,9 +1,8 @@
 """
 画像部分
 """
-from flask import Blueprint, current_app, send_from_directory, Flask
+from flask import Blueprint, current_app, send_from_directory
 from flask import render_template, request
-from flask_login import current_user, login_required
 from web.service.school_profile import RelationshipService as relationService
 from web.service.school_profile import profile as profile_service
 from web.extensions import oidc
@@ -13,26 +12,26 @@ import logging
 school_profile_bp = Blueprint("school_profile", __name__)
 
 
-@school_profile_bp.route("/school_card", methods=["POST", "GET"])
-# @login_required
-@oidc.require_login
-@oidc.require_keycloak_role("KETD", "user")
-def school_card():
-    """
-    展示学校卡片
-    :return:
-    """
-    school = request.form.get("school", None)
-    if school is None:
-        schools = profile_service.get_all_schools()
-        return render_template("school_profile/school_card.html", schools=schools)
-    else:
-        # 判断该高校是否存在
-        is_exist = profile_service.get_school_is_exist(school)
-        if is_exist:
-            return render_template("school_profile/school_card.html", schools=[school])
-        else:
-            return render_template("school_profile/school_card.html", schools=[])
+# @school_profile_bp.route("/school_card", methods=["POST", "GET"])
+# # @login_required
+# @oidc.require_login
+# @oidc.require_keycloak_role("KETD", "user")
+# def school_card():
+#     """
+#     展示学校卡片
+#     :return:
+#     """
+#     school = request.form.get("school", None)
+#     if school is None:
+#         schools = profile_service.get_all_schools()
+#         return render_template("school_profile/school_card.html", schools=schools)
+#     else:
+#         # 判断该高校是否存在
+#         is_exist = profile_service.get_school_is_exist(school)
+#         if is_exist:
+#             return render_template("school_profile/school_card.html", schools=[school])
+#         else:
+#             return render_template("school_profile/school_card.html", schools=[])
 
 
 @school_profile_bp.route("/school_entrance")
@@ -55,8 +54,8 @@ def school_entrance():
 
 
 @school_profile_bp.route("/index/<school>")
-@oidc.require_login
-@oidc.require_keycloak_role("KETD", "user")
+# @oidc.require_login
+# @oidc.require_keycloak_role("KETD", "user")
 # @login_required
 def index(school):
     """
