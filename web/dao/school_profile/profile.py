@@ -574,3 +574,18 @@ def get_project_info_by_teacher_ids(teacher_ids):
     sql += ") GROUP BY name limit 6 "
     return db.select(sql, bind='data_mining')
 
+
+def get_province_school_patent_num():
+    """
+    获取每个省份、城市、高校 的专利数量 用于生成旭日图
+    :return:
+    """
+    sql = """
+        select name school, province, city, patent_num
+        from school
+        where patent_num is not null
+        order by patent_num desc 
+        limit 100
+    """
+    return db.select(sql, bind="data_mining")
+

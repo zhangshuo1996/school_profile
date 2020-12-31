@@ -602,3 +602,35 @@ def get_teacher_patent_project_data(teacher_id):
         "patent_info": patent_info,
         "project_info": project_info
     }
+
+
+def get_province_school_patent_num():
+    """
+    获取每个省份、城市、高校 的专利数量 用于生成旭日图
+    :return: {
+                "江苏省" : {
+                        "南京市" : {
+                            "南大"： 1111，
+                            "东大"： 2222，
+                            。。。
+                        }，
+                        。。。
+                }，
+                。。。。
+            }
+    """
+    data = profile_dao.get_province_school_patent_num()
+    result = {}
+    for dic in data:
+        province = dic["province"]
+        city = dic["city"]
+        if province in result.keys():
+            if city in result[province].keys():
+                result[province][city][dic["school"]] = dic["patent_num"]
+            else:
+                result[province][city] = {dic["school"]: dic["patent_num"]}
+        else:
+            result[province] = {
+                city: {dic["school"]: dic["patent_num"]}
+            }
+    return result

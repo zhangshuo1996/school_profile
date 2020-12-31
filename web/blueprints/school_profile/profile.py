@@ -12,31 +12,9 @@ import logging
 school_profile_bp = Blueprint("school_profile", __name__)
 
 
-# @school_profile_bp.route("/school_card", methods=["POST", "GET"])
-# # @login_required
+@school_profile_bp.route("/school_entrance")
 # @oidc.require_login
 # @oidc.require_keycloak_role("KETD", "user")
-# def school_card():
-#     """
-#     展示学校卡片
-#     :return:
-#     """
-#     school = request.form.get("school", None)
-#     if school is None:
-#         schools = profile_service.get_all_schools()
-#         return render_template("school_profile/school_card.html", schools=schools)
-#     else:
-#         # 判断该高校是否存在
-#         is_exist = profile_service.get_school_is_exist(school)
-#         if is_exist:
-#             return render_template("school_profile/school_card.html", schools=[school])
-#         else:
-#             return render_template("school_profile/school_card.html", schools=[])
-
-
-@school_profile_bp.route("/school_entrance")
-@oidc.require_login
-@oidc.require_keycloak_role("KETD", "user")
 def school_entrance():
     """
     高校画像入口 学校 检索框
@@ -303,3 +281,13 @@ def get_team_member_info():
     institution = request.args.get("institution")
     result = relationService.get_team_member_info(school, institution)
     return {"success": True, "data": result}
+
+
+@school_profile_bp.route("/get_province_school_patent_num")
+def get_province_school_patent_num():
+    """
+    获取每个省份、城市、高校 的专利数量 用于生成旭日图
+    :return:
+    """
+    data = profile_service.get_province_school_patent_num()
+    return {"data": data}
