@@ -620,17 +620,42 @@ def get_province_school_patent_num():
             }
     """
     data = profile_dao.get_province_school_patent_num()
-    result = {}
+    province__city_school = {}  # 省份-城市-高校
+    province__area_patent_num = {}  # 省份-区域-专利数量
+    city__patent_num = {}  # 城市-专利数量
+    school__patent_num = {}  # 高校专利数量
     for dic in data:
         province = dic["province"]
         city = dic["city"]
-        if province in result.keys():
-            if city in result[province].keys():
-                result[province][city][dic["school"]] = dic["patent_num"]
+        if province in province__city_school.keys():
+            if city in province__city_school[province].keys():
+                province__city_school[province][city][dic["school"]] = dic["patent_num"]
             else:
-                result[province][city] = {dic["school"]: dic["patent_num"]}
+                province__city_school[province][city] = {dic["school"]: dic["patent_num"]}
         else:
-            result[province] = {
+            province__city_school[province] = {
                 city: {dic["school"]: dic["patent_num"]}
             }
-    return result
+    # for dic in data:
+    #     province = dic["province"]
+        if province in province__area_patent_num.keys():
+            province__area_patent_num[province]["patent_num"] += dic["patent_num"]
+        else:
+            province__area_patent_num[province] = {
+                "area": dic["area"],
+                "area_code": dic["area_code"],
+                "patent_num": dic["patent_num"]
+            }
+
+        if city in city__patent_num.keys():
+            city__patent_num[city] += dic["patent_num"]
+        else:
+            city__patent_num = {city: dic["patent_num"]}
+
+        school = dic["school"]
+        if school in school__patent_num.keys():
+            school__patent_num[school] += dic["patent_num"]
+        else:
+            school__patent_num = {school: dic["patent_num"]}
+
+    return province__city_school, province__area_patent_num, city__patent_num, school__patent_num

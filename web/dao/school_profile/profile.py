@@ -581,7 +581,7 @@ def get_province_school_patent_num():
     :return:
     """
     sql = """
-        select name school, province, city, patent_num
+        select name school, province, city, patent_num, area, area_code
         from school
         where patent_num is not null
         order by patent_num desc 

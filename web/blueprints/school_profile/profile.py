@@ -289,5 +289,5 @@ def get_province_school_patent_num():
     获取每个省份、城市、高校 的专利数量 用于生成旭日图
     :return:
     """
-    data = profile_service.get_province_school_patent_num()
-    return {"data": data}
+    province__city_school, province__area_patent_num, city__patent_num, school__patent_num = profile_service.get_province_school_patent_num()
+    return {"province__city_school": province__city_school, "province__area_patent_num": province__area_patent_num, "city__patent_num": city__patent_num, "school__patent_num": school__patent_num}
