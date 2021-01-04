@@ -2,12 +2,13 @@
  * 显示高校画像入口的旭日图
  */
 let COLOR_LIST = [
-    ["#0000FF", "#3300FF", "#3300CC", "#3333FF"],
+    ["#3333FF", "#3333FF", "#3333FF", "#3333FF"],
     ["#FF3300", "#e6550d", "#fd8d3c", "#fd8d3c"],
     ["#31a354", "#74c476", "#a1d99b", "#31a354"],
     ["#990000", "#660000", "#990033", "#660033"],
-    ["#000000", "#696969", "#808080", "#333333"],
+    ["#696969", "#696969", "#808080", "#333333"],
     ["#006400", "#228B22", "#556B2F", "#9ACD32"],
+    ["#660099", "#9933CC", "#CC66FF", "#660066"],
 ];
 let province__area_patent_num;
 let province__city_school;
@@ -70,20 +71,22 @@ function format_data(data){
     debugger;
     for(let province in data){
         let level1_color = province__area_patent_num[province]["area_code"]-1;
+        // let level2_color = randomNum(1, 4);
+        let level2_color = 0;
+        debugger;
         let temp1 = {
             name : province,
             itemStyle: {
-                color: COLOR_LIST[level1_color][0],
+                color: COLOR_LIST[level1_color][level2_color],
             },
             children: [],
         };
         let province_info = data[province];
         for(let city in province_info){
-            // let level2_color = randomNum(1, 4);
             let temp2 = {
                 name: city,
                 itemStyle: {
-                        color: COLOR_LIST[level1_color][0],
+                        color: COLOR_LIST[level1_color][level2_color],
                     },
                 children: []
                 };
@@ -92,7 +95,7 @@ function format_data(data){
                 temp2.children.push({
                     name: school,
                     itemStyle: {
-                        color: COLOR_LIST[level1_color][0],
+                        color: COLOR_LIST[level1_color][level2_color],
                     },
                     value: city_info[school]
                 })
@@ -157,7 +160,8 @@ let option = {
         },
         label: {
             // rotate: 'tangential' // 标签旋转
-            align: "right"
+            align: "right",
+            color: "#000000",
         }
         }, { // 市级
             r0: '45%',
@@ -165,7 +169,8 @@ let option = {
             label: {
                 fontStyle: 'normal',
                 fontSize: 12,
-                align: 'right'
+                align: 'right',
+                color: "#000000",
             }
         }, { // 高校
             r0: '70%',
@@ -175,11 +180,12 @@ let option = {
                 fontSize: 12,
                 padding: 3,
                 silent: false,
-                // color: "#000000",
-                // fontWeight: "bolder",
+                color: "#000000",
+                fontFamily: "HeiTi",
+                fontWeight: "bold",
                 // textBorderColor: "rgba(16, 15, 15, 1)",
-                textBorderColor: "#000000",
-                textBorderWidth: 3
+                // textBorderColor: "#000000",
+                // textBorderWidth: 3
             },
             itemStyle: {
                 borderWidth: 3
